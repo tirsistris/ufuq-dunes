@@ -80,8 +80,7 @@ const load = src => new Promise(r => { const i = new Image(); i.onload = () => r
     notes.innerHTML = '<div class=cap>' + row.theme + '</div>' +
       '<div>Средняя разница пикселя: ' + (sum / n).toFixed(2) + ' / 255</div>' +
       '<div>Пикселей с разницей &gt; 48: ' + pct + '%</div><br>' +
-      (row.bad.length ? '<div class=red>Геометрия &gt; 2 px: ' + row.bad.length + '</div>' + row.bad.map(b => '<div class=red>' + b.k + ': Δx ' + b.d[0] + ', Δw ' + b.d[2] + '</div>').join('') +
-        '<br><div>Причина: tabular-nums на суммах (требование спеки). В Figma цифры пропорциональные; без tnum геометрия 100% в допуске (SPOIL=notnum).</div>'
+      (row.bad.length ? '<div class=red>Геометрия &gt; 2 px: ' + row.bad.length + '</div>' + row.bad.map(b => '<div class=red>' + b.k + ': Δx ' + b.d[0] + ', Δw ' + b.d[2] + '</div>').join('')
         : '<div class=ok>Геометрия: все элементы в допуске ±2 px</div>');
     stats[row.theme] = { mean: +(sum / n).toFixed(2), bigPct: +pct, bad: row.bad.length };
     el.append(notes);

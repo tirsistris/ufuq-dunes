@@ -6,8 +6,8 @@ const SPENT = 1400;
 const UPCOMING = 1950;
 const AVAILABLE = OPENING - SPENT - UPCOMING; // 5 650
 
-// Полоса: 322 px под три сегмента + два зазора по 3 = 328, как фрейм Bar в Figma.
-const BAR_SEGMENTS_PX = 322;
+// Полоса: 320 px под три сегмента + два зазора по 3 = 326, как фрейм Bar в Figma.
+const BAR_SEGMENTS_PX = 320;
 
 const BUILT = new Set(['home']);  // какие состояния уже собраны
 

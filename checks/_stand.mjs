@@ -18,8 +18,8 @@ const SPOILS = {
   token: ['styles.css', '--foreground: #edf0f8;', '--foreground: #edf0f9;'],
   // зона нажатия иконки 40 вместо 44
   tap: ['styles.css', '.hit44 { width: 44px; height: 44px;', '.hit44 { width: 40px; height: 40px;'],
-  // не порча, а опыт: суммы без tabular-nums (как в Figma) — открытый вопрос s1
-  notnum: ['styles.css', '.num { font-variant-numeric: tabular-nums; }', '.num { }'],
+  // tabular-nums на телефоне (в Figma цифры пропорциональные) — геометрия обязана покраснеть
+  tnum: ['styles.css', '/* ---------- витрина ---------- */', '#phone * { font-variant-numeric: tabular-nums; }\n/* ---------- витрина ---------- */'],
 };
 export const SPOIL = process.env.SPOIL || '';
 if (SPOIL && !SPOILS[SPOIL]) throw new Error(`нет порчи ${SPOIL}`);
