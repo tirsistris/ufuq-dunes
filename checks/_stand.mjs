@@ -48,6 +48,8 @@ const SPOILS = {
   closenow: ['app.js', "go('home', SHEET_OUT(240))", "go('home')"],
   // Done снова без Dissolve
   donenow: ['app.js', "go('home', DISSOLVE(240))", "go('home')"],
+  // дневной upcoming светлее (≈ 2,5 на card) — контраст обязан покраснеть (порог 3 и эталон Figma)
+  upc: ['styles.css', '--seg-upcoming: #8b84bc;', '--seg-upcoming: #a49fcc;'],
   // tabular-nums на телефоне (в Figma цифры пропорциональные) — геометрия обязана покраснеть
   tnum: ['styles.css', '/* ---------- витрина ---------- */', '#phone * { font-variant-numeric: tabular-nums; }\n/* ---------- витрина ---------- */'],
 };
