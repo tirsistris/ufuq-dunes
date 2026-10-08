@@ -3,7 +3,9 @@
 //   2→3 Confirm — Dissolve 240 мс ease-out; клавиши 1↔5/6 — Smart animate 160 мс ease-out.
 //   Done→Home — Dissolve 240 мс ease-out (как в Figma).
 //   Home→1 и крестик (1/5/6)→Home — решение Баатра (в Figma Dissolve, записано в «Расхождения»):
-//   шторка выезжает снизу / уезжает вниз 240 мс ease-out, затемнение проявляется / гаснет.
+//   шторка выезжает снизу 240 мс ease-out, затемнение проявляется за те же 240;
+//   крестик — шторка уезжает вниз 160 мс ease-in, затемнение гаснет за те же 160.
+//   Кривая ловится и по строке easing, и по положению шторки в середине пути.
 // Каждый вызов Element.animate() пишется в window.__anims: длительность, кривая, анимируемые свойства.
 // prefers-reduced-motion → только прозрачность. Любое расхождение — красное.
 import { openState, line } from './_stand.mjs';
@@ -95,8 +97,10 @@ async function run(reduced) {
     const op = el => { let o = 1; for (let x = el; x && x !== document.body; x = x.parentElement) o *= +getComputedStyle(x).opacity; return o; };
     return { h: p.height, y: sh ? sh.getBoundingClientRect().y - p.y : null, sc: sc ? op(sc) : null, sh: sh ? op(sh) : null, ghost: !!g };
   });
+  const SHEET_MS = { open: 240, close: 160 }, SHEET_EASE = { open: 'ease-out', close: 'ease-in' };
   async function sheetMotion(what, dir, act, state) {
     n++;
+    const ms = SHEET_MS[dir], ease = SHEET_EASE[dir];
     const bad = [];
     await page.evaluate(() => { for (const x of document.getAnimations()) x.finish(); });
     const rest = await SH();
@@ -107,13 +111,15 @@ async function run(reduced) {
     const a = await anims();
     if (!a.length) bad.push('анимаций нет');
     for (const x of a) {
-      if (x.d !== 240) bad.push(`длительность ${x.d}, ждали 240`);
-      if (x.e !== 'ease-out') bad.push(`кривая ${x.e}, ждали ease-out`);
+      if (x.d !== ms) bad.push(`длительность ${x.d}, ждали ${ms}`);
+      if (x.e !== ease) bad.push(`кривая ${x.e}, ждали ${ease}`);
       if (reduced) for (const p of x.props) if (p !== 'opacity') bad.push(`анимируется ${p}, ждали только opacity`);
     }
     await page.evaluate(() => { for (const x of document.getAnimations()) { x.pause(); x.currentTime = 0; } });
     const t0 = await SH();
-    await page.evaluate(() => { for (const x of document.getAnimations()) x.currentTime = 239.9; });
+    await page.evaluate(m => { for (const x of document.getAnimations()) x.currentTime = m; }, ms / 2);
+    const tm = await SH();
+    await page.evaluate(m => { for (const x of document.getAnimations()) x.currentTime = m; }, ms - 0.1);
     const t1 = await SH();
     await page.evaluate(() => { for (const x of document.getAnimations()) x.finish(); });
     const fin = await SH();
@@ -132,6 +138,15 @@ async function run(reduced) {
       if (reduced) { if (!near(to.y, rest.y)) bad.push(`reduce: шторка едет (y ${to.y?.toFixed(1)})`); if (to.sh > 0.02) bad.push(`reduce: шторка в конце видна (${to.sh})`); }
       else if (!off(to.y)) bad.push(`шторка в конце на y ${to.y?.toFixed(1)}, ждали за нижним краем`);
       if (to.sc > 0.02) bad.push(`затемнение в конце ${to.sc}, ждали 0`);
+    }
+    // середина пути: к 1/2 времени ease-out (0 0 0,58 1) проходит ≈ 0,69 пути, ease-in (0,42 0 1 1) — ≈ 0,31
+    const pathPart = (v0, v, v1) => (v1 - v0) ? (v - v0) / (v1 - v0) : null;
+    const scMid = pathPart(from.sc, tm.sc, dir === 'open' ? fin.sc : to.sc);
+    const yMid = reduced ? null : pathPart(from.y, tm.y, dir === 'open' ? fin.y : to.y);
+    for (const [nm, v] of [['затемнение', scMid], ['шторка', yMid]]) {
+      if (v == null) continue;
+      if (ease === 'ease-out' && v < 0.6) bad.push(`${nm} в середине прошла ${v.toFixed(2)} пути, у ease-out ждали ≥ 0,6`);
+      if (ease === 'ease-in' && v > 0.4) bad.push(`${nm} в середине прошла ${v.toFixed(2)} пути, у ease-in ждали ≤ 0,4`);
     }
     const uniq = [...new Set(bad)];
     if (uniq.length) { red++; line(`КРАСНОЕ [${tag}] ${what}: ${uniq.join('; ')}`); } else line(`ок [${tag}] ${what}`);
