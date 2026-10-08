@@ -2,4 +2,6 @@ runs/
 checks/
 ref/
 docs/
-compare-board.png
+CLAUDE.md
+compare-board*.png
+transitions-*.png
