@@ -1,7 +1,7 @@
 // Лист сверки: для каждого состояния и темы — эталон Figma (get_screenshot 390×844 @1x),
 // кадр приложения 390×844 @1x, наложение 50% и карта разницы.
 // Красные рамки — элементы, у которых геометрия ушла > 2 px (из runs/home-geometry.json
-// и runs/sheet-geometry.json — сначала прогнать эти стражи). Ничего не чинит — только показывает.
+// runs/sheet-geometry.json и runs/impact-geometry.json — сначала прогнать эти стражи). Ничего не чинит — только показывает.
 // `node checks/compare-board.mjs` — Home → compare-board.png;
 // `node checks/compare-board.mjs 1 2 5 6` — эти состояния → compare-board-1-2-5-6.png.
 // Кадры приложения: runs/app-<состояние>-<тема>.png.
@@ -17,11 +17,14 @@ const geo = name => {
   return JSON.parse(fs.readFileSync(f, 'utf8'));
 };
 const GEO_HOME = STATES.includes('home') ? geo('home-geometry.json') : null;
-const GEO_SHEET = STATES.some(s => s !== 'home') ? geo('sheet-geometry.json') : null;
-const geoOf = (state, theme) => state === 'home' ? (GEO_HOME[theme] || {}) : ((GEO_SHEET[theme] || {})[state] || {});
+const IMPACT = s => s === '3' || s === '4';
+const GEO_SHEET = STATES.some(s => s !== 'home' && !IMPACT(s)) ? geo('sheet-geometry.json') : null;
+const GEO_IMPACT = STATES.some(IMPACT) ? geo('impact-geometry.json') : null;
+const geoOf = (state, theme) => state === 'home' ? (GEO_HOME[theme] || {})
+  : (((IMPACT(state) ? GEO_IMPACT : GEO_SHEET)[theme] || {})[state] || {});
 const refOf = (state, theme) => path.join(ROOT, 'ref', state === 'home' ? `home-${theme}.png` : `s${state}-${theme}.png`);
-const TITLE = { home: 'Home', 1: '1 · Enter amount', 2: '2 · Confirm', 5: '5 · Not enough money', 6: '6 · Above channel limit' };
-const NODE = { home: ['90:8017', '90:8103'], 1: ['90:6627', '90:7344'], 2: ['90:6784', '90:7495'], 5: ['90:6915', '90:7620'], 6: ['90:7073', '90:7772'] };
+const TITLE = { home: 'Home', 1: '1 · Enter amount', 2: '2 · Confirm', 3: '3 · Calculating impact', 4: '4 · Projected impact', 5: '5 · Not enough money', 6: '6 · Above channel limit' };
+const NODE = { home: ['90:8017', '90:8103'], 1: ['90:6627', '90:7344'], 2: ['90:6784', '90:7495'], 3: ['90:7298', '90:7926'], 4: ['90:7233', '90:7962'], 5: ['90:6915', '90:7620'], 6: ['90:7073', '90:7772'] };
 const b64 = f => 'data:image/png;base64,' + fs.readFileSync(f).toString('base64');
 
 const shots = {};

@@ -1,0 +1,71 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Scene &#194;&#183; vector" clip-path="url(#clip0_0_10)">
+<path id="sky" d="M390 0H0V844H390V0Z" fill="url(#paint0_linear_0_10)"/>
+<g id="Sky">
+</g>
+<g id="moon" filter="url(#filter0_f_0_10)">
+<circle cx="332" cy="96" r="16" fill="#F7EEE6" fill-opacity="0.72"/>
+</g>
+<g id="haze" filter="url(#filter1_f_0_10)">
+<path d="M410 514H-20V634H410V514Z" fill="url(#paint1_linear_0_10)"/>
+</g>
+<path id="far" d="M0 596C60 584 120 578 180 584C230 589 270 580 320 574C350 571 372 574 390 578V664H0V596Z" fill="url(#paint2_linear_0_10)"/>
+<path id="peak" d="M0 644C70 629 140 604 205 574C222 566 238 564 252 568C290 580 330 604 390 618V844H0V644Z" fill="url(#paint3_linear_0_10)"/>
+<path id="peakShade" d="M252 568C276 584 300 610 330 628C350 640 372 644 390 644V618C330 604 290 580 252 568Z" fill="url(#paint4_linear_0_10)"/>
+<path id="nearL" d="M0 694C80 674 160 672 240 690C300 704 350 720 390 734V844H0V694Z" fill="url(#paint5_linear_0_10)"/>
+<path id="nearR" d="M0 748.33C70 724.33 300 708 390 712V844L0 848.33V748.33Z" fill="url(#paint6_linear_0_10)"/>
+<path id="fg" d="M0 784C120 758 260 756 390 788V844H0V784Z" fill="url(#paint7_linear_0_10)"/>
+</g>
+<defs>
+<filter id="filter0_f_0_10" x="314.836" y="78.8364" width="34.3273" height="34.3273" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="0.581818" result="effect1_foregroundBlur_0_10"/>
+</filter>
+<filter id="filter1_f_0_10" x="-38" y="496" width="466" height="156" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="9" result="effect1_foregroundBlur_0_10"/>
+</filter>
+<linearGradient id="paint0_linear_0_10" x1="0" y1="0" x2="0" y2="844" gradientUnits="userSpaceOnUse">
+<stop stop-color="#EBDCD3"/>
+<stop offset="0.3" stop-color="#F3CBB0"/>
+<stop offset="0.52" stop-color="#F1B6A0"/>
+<stop offset="0.66" stop-color="#E89F90"/>
+<stop offset="0.73" stop-color="#E6B0A6"/>
+<stop offset="1" stop-color="#E6B0A6"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_10" x1="2.82776e-06" y1="514" x2="2.82776e-06" y2="634" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F8DDD0" stop-opacity="0"/>
+<stop offset="0.55" stop-color="#F8DDD0" stop-opacity="0.75"/>
+<stop offset="1" stop-color="#F8DDD0" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint2_linear_0_10" x1="0" y1="572" x2="0" y2="664" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E6D3D8"/>
+<stop offset="1" stop-color="#CBBDD1"/>
+</linearGradient>
+<linearGradient id="paint3_linear_0_10" x1="0" y1="564" x2="0" y2="744" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F6EDF0"/>
+<stop offset="1" stop-color="#BCB2CF"/>
+</linearGradient>
+<linearGradient id="paint4_linear_0_10" x1="-7.87818e-07" y1="568" x2="-7.87818e-07" y2="644" gradientUnits="userSpaceOnUse">
+<stop stop-color="#CEC5E4"/>
+<stop offset="1" stop-color="#9A93B8"/>
+</linearGradient>
+<linearGradient id="paint5_linear_0_10" x1="0" y1="672" x2="0" y2="804" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D6CBE0"/>
+<stop offset="1" stop-color="#C9C2DA"/>
+</linearGradient>
+<linearGradient id="paint6_linear_0_10" x1="-56.7525" y1="760.88" x2="54.7525" y2="760.88" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D6CBE0"/>
+<stop offset="1" stop-color="#C9C2DA"/>
+</linearGradient>
+<linearGradient id="paint7_linear_0_10" x1="0" y1="824.821" x2="0" y2="761.529" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D6CBE0"/>
+<stop offset="1" stop-color="#C9C2DA"/>
+</linearGradient>
+<clipPath id="clip0_0_10">
+<rect width="390" height="844" fill="white"/>
+</clipPath>
+</defs>
+</svg>

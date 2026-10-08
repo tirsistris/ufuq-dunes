@@ -28,6 +28,18 @@ const SPOILS = {
   zero: ['app.js', "state !== '1' || amount === 0;", "state !== '1';"],
   // лимит 6 цифр снят — логика обязана покраснеть
   maxlen: ['app.js', 'const MAX_DIGITS = 6;', 'const MAX_DIGITS = 99;'],
+  // 3: блок «Calculating impact» на 3 px ниже — геометрия 3/4 обязана покраснеть
+  calcpos: ['styles.css', 'position: absolute; left: 16px; top: 356px; width: 358px;', 'position: absolute; left: 16px; top: 359px; width: 358px;'],
+  // размытие карточки 24 вместо 12 (значение Figma вместо CSS) — цвета 3/4 обязаны покраснеть
+  blur: ['styles.css', '-webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);', '-webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);'],
+  // Confirm через Smart animate вместо Dissolve — поток обязан покраснеть
+  dissolve: ['app.js', "go('3', DISSOLVE(240))", "go('3', SMART(240))"],
+  // таймер 3 → 4 короче Figma (1 400 вместо 1 500) — поток обязан покраснеть
+  timer: ['app.js', 'const CALC_MS = 1500;', 'const CALC_MS = 1400;'],
+  // новые координаты снимаются после старта анимации предка — сдвиг считается дважды
+  flipnow: ['app.js', 'const o = old.get(k), n = now.get(k);', 'const o = old.get(k), n = rect(el);'],
+  // дюны 4 проявляются с нуля поверх гаснущих 3 — сквозь них просвечивает Home
+  scenefade: ['app.js', 'if (el.dataset.k && before.has(el.dataset.k)) continue;', ''],
   // дневной destructive на ступень — цвета шторки обязаны покраснеть
   destr: ['styles.css', '--destructive: #bd0005;', '--destructive: #bd0006;'],
   // tabular-nums на телефоне (в Figma цифры пропорциональные) — геометрия обязана покраснеть
@@ -60,13 +72,21 @@ export async function serve() {
 // theme: 'night' | 'day'; state: 'home' | '1'..'6'
 export async function openHome(theme) { return openState(theme, 'home'); }
 
-export async function openState(theme, state) {
+export async function openState(theme, state, opts = {}) {
   const srv = await serve();
   const browser = await chromium.launch();
   const page = await browser.newPage({
     viewport: { width: 900, height: 920 }, deviceScaleFactor: 1,
     colorScheme: theme === 'night' ? 'dark' : 'light',
+    reducedMotion: opts.reducedMotion ? 'reduce' : 'no-preference',
   });
+  if (opts.init) await page.addInitScript(opts.init);
+  // 3 сам уходит в 4 через 1500 мс (таймер Figma) — часы ставим на паузу до загрузки,
+  // чтобы кадр 3 стоял; поток проверяется отдельно (checks/flow.mjs, clock.runFor).
+  if (state === '3' || opts.clock) {
+    await page.clock.install({ time: new Date('2026-09-04T09:41:00') });
+    await page.clock.pauseAt(new Date('2026-09-04T09:41:01'));
+  }
   await page.goto(`${srv.url}?theme=${theme === 'night' ? 'dark' : 'light'}&state=${state}`);
   await page.evaluate(() => document.fonts.ready);
   await page.waitForFunction(() => [...document.images].every(i => i.complete));

@@ -44,6 +44,8 @@
   /* не переменная: заливка Sky шторки и scrim */
   --sheet-sky: linear-gradient(to bottom, #0f1730 0%, #1a2647 55%, #2b3c69 100%);
   --scrim: rgba(6, 9, 20, 0.55);
+  /* матовая карточка 3/4 — переменная card */
+  --glass: var(--card);
   color-scheme: dark;
 }
 
@@ -78,6 +80,8 @@
   /* не переменная: заливка Sky шторки (55%, а не 50% как на Home) и scrim */
   --sheet-sky: linear-gradient(to bottom, #e6d8cc 0%, #eebb9b 55%, #da977f 100%);
   --scrim: rgba(42, 36, 51, 0.32);
+  /* не переменная: заливка Ground на 3/4 днём */
+  --glass: rgba(255, 255, 255, 0.87);
   color-scheme: light;
 }
 
@@ -383,3 +387,49 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .btn-primary:disabled { background: var(--tint); color: var(--muted-foreground); cursor: default; }
 .btn-secondary { height: 48px; background: var(--tint); color: var(--foreground); }
 .btn-back { height: 44px; display: flex; align-items: center; justify-content: center; color: var(--foreground); }
+
+/* ---------- 3 · Calculating impact, 4 · Projected impact ---------- */
+
+.impact { position: absolute; inset: 0; z-index: 6; }
+.scene { position: absolute; left: 0; top: 0; width: 390px; height: 844px; display: block; }
+[data-theme='night'] .scene[data-scene='day'],
+[data-theme='day'] .scene[data-scene='night'] { display: none; }
+/* статус-бар над дюнами: без подложки, цвет on-sky */
+.phone[data-state='3'] .statusbar,
+.phone[data-state='4'] .statusbar { z-index: 7; background: transparent; color: var(--on-sky); }
+
+/* Ground: Background blur 24 в Figma = CSS blur(12px) */
+.glass {
+  padding: 16px; border-radius: 20px; overflow: hidden;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  display: flex; flex-direction: column; gap: 16px; align-items: stretch;
+}
+.glass .muted { color: var(--muted-foreground); }
+.bar-block { display: flex; flex-direction: column; gap: 8px; }
+
+.calc {
+  position: absolute; left: 16px; top: 356px; width: 358px;
+  display: flex; flex-direction: column; gap: 20px; align-items: stretch;
+}
+.calc h2 { color: var(--on-sky); white-space: nowrap; }
+
+.imp-sky {
+  position: absolute; left: 0; top: 0; width: 390px; height: 338px; padding: 0 20px;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; align-items: flex-start;
+  color: var(--on-sky); white-space: nowrap;
+}
+.imp-amount { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+.imp-amount .t-sub { color: var(--on-sky-muted); }
+.imp-card { position: absolute; left: 16px; top: 358px; width: 358px; }
+.imp-text { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.imp-line { display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+.imp-text > .t-footnote { white-space: nowrap; }
+.done { position: absolute; left: 20px; top: 760px; width: 350px; }
+
+/* снимок старого кадра на время перехода (app.js, transition) */
+.phone.ghost {
+  position: absolute; inset: 0; z-index: 20; background: transparent;
+  pointer-events: none;
+}
+.sheet { box-shadow: 0 400px 0 0 var(--card); } /* закрывает низ, пока шторка едет при смене высоты */

@@ -1,8 +1,8 @@
-// Зоны нажатия ≥ 44×44 — все видимые button: телефон и панель витрины, Home и шторка.
+// Зоны нажатия ≥ 44×44 — все видимые button: телефон и панель витрины, Home, шторка, 3 и 4.
 import { openState, line } from './_stand.mjs';
 
 let red = 0;
-for (const theme of ['night', 'day']) for (const state of ['home', '1', '2', '5', '6']) {
+for (const theme of ['night', 'day']) for (const state of ['home', '1', '2', '3', '4', '5', '6']) {
   const { page, close } = await openState(theme, state);
   const list = await page.$$eval('button', bs => bs.filter(b => b.offsetParent).map(b => {
     const r = b.getBoundingClientRect();

@@ -246,6 +246,73 @@
         <button class="btn-back t-headline" data-k="back" data-show="2">Back</button>
       </div>
     </section>
+
+    <!-- Экраны 3 и 4: дюны — слой «Scene · vector» из каждого фрейма как есть, матовая карточка Ground. -->
+    <section class="impact" data-show="3 4" aria-live="polite">
+      <img class="scene" src="assets/scene/scene-3-night.svg" alt="" width="390" height="844" data-k="scene" data-scene="night" data-show="3">
+      <img class="scene" src="assets/scene/scene-3-day.svg" alt="" width="390" height="844" data-k="scene" data-scene="day" data-show="3">
+      <img class="scene" src="assets/scene/scene-4-night.svg" alt="" width="390" height="844" data-k="scene" data-scene="night" data-show="4">
+      <img class="scene" src="assets/scene/scene-4-day.svg" alt="" width="390" height="844" data-k="scene" data-scene="day" data-show="4">
+
+      <div class="calc" data-show="3">
+        <h2 class="t-title3-s" data-k="calc-title">Calculating impact…</h2>
+        <div class="glass" data-k="calc-card">
+          <div class="bar-block">
+            <div class="pm-bar">
+              <i class="s-spent" data-k="calc-spent"></i>
+              <i class="s-avail" data-k="calc-avail"></i>
+              <i class="s-upcoming" data-k="calc-upc"></i>
+            </div>
+            <div class="pm-labels">
+              <div class="l-spent"><span class="t-footnote muted" data-k="calc-lbl-spent">Spent</span><span class="t-headline" data-k="calc-val-spent">2 900</span></div>
+              <div class="l-upcoming"><span class="t-footnote muted">Upcoming payments</span><span class="t-headline" data-k="calc-val-upc">1 950</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="imp-sky" data-show="4">
+        <h2 class="t-title3-s" data-k="imp-title">Projected impact</h2>
+        <div class="imp-amount">
+          <div class="amt-row">
+            <svg width="29.54" height="32" data-k="imp-riyal" aria-hidden="true"><use href="#i-riyal"/></svg>
+            <span class="t-amount44" data-k="imp-amt">4 150</span>
+          </div>
+          <span class="t-sub" data-k="imp-sub">Available after transfer</span>
+        </div>
+      </div>
+      <div class="glass imp-card" data-k="imp-card" data-show="4">
+        <div class="bar-block">
+          <div class="pm-bar">
+            <i class="s-spent" data-k="imp-spent"></i>
+            <i class="s-avail" data-k="imp-avail"></i>
+            <i class="s-upcoming" data-k="imp-upc"></i>
+          </div>
+          <div class="pm-labels">
+            <div class="l-spent"><span class="t-footnote muted">Spent</span><span class="t-headline" data-k="imp-val-spent">2 900</span></div>
+            <div class="l-upcoming"><span class="t-footnote muted" data-k="imp-lbl-upc">Upcoming payments</span><span class="t-headline" data-k="imp-val-upc">1 950</span></div>
+          </div>
+        </div>
+        <div class="imp-text">
+          <div class="imp-line" data-k="imp-line1">
+            <span class="t-body">If</span>
+            <svg width="12" height="13" aria-hidden="true"><use href="#i-riyal"/></svg>
+            <span class="t-body" data-k="imp-sum">1 500</span>
+            <span class="t-body">is transferred to Abdullah</span>
+          </div>
+          <div class="imp-line" data-k="imp-line2">
+            <svg width="12" height="13" aria-hidden="true"><use href="#i-riyal"/></svg>
+            <span class="t-headline" data-k="imp-from">246</span>
+            <span class="t-body">→</span>
+            <svg width="12" height="13" aria-hidden="true"><use href="#i-riyal"/></svg>
+            <span class="t-headline" data-k="imp-to">180</span>
+            <span class="t-body">a day until payday</span>
+          </div>
+          <span class="t-footnote muted" data-k="imp-note">No money was sent</span>
+        </div>
+      </div>
+      <button class="btn-primary t-headline done" data-k="done" data-show="4">Done</button>
+    </section>
   </div>
 
   <aside class="rail">
@@ -263,8 +330,8 @@
         <button data-state="home">Home</button>
         <button data-state="1">1 · Enter amount</button>
         <button data-state="2">2 · Confirm</button>
-        <button data-state="3" disabled>3 · Calculating impact</button>
-        <button data-state="4" disabled>4 · Projected impact</button>
+        <button data-state="3">3 · Calculating impact</button>
+        <button data-state="4">4 · Projected impact</button>
         <button data-state="5">5 · Not enough money</button>
         <button data-state="6">6 · Above channel limit</button>
       </div>
