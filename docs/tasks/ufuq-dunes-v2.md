@@ -89,9 +89,11 @@
 - Приёмка глазами пройдена (Баатр, 2026-10-09).
 - s4-П4 — deploy-dunes.txt обновлён под HEAD 0e6802d: index 35a2564d, app.js a4b3c3d9, styles 78f7faa3 (сверено sha256sum с диском; проверки sha из строки (а) проходят на чистом дереве). Файл вне репо — коммита нет.
 - Финальный прогон одним запуском на HEAD 0e6802d: 10/10 стражей зелёные — home-geometry, home-colors, sheet-geometry, sheet-colors, impact-geometry, impact-colors, amount-logic 21/21, flow 40/40, contrast 18/18, tap-targets. Дерево после прогона чистое.
-Следующий шаг: деплой — запускает только Баатр: deploy-dunes.txt, а → б.
+- Деплой (Баатр, 2026-10-09): dpl_4Rg68tpwCNAXAcnvEQPjYNcBnTuX, https://ufuq-dunes.vercel.app. Проверка (б): код 200 без переадресации; sha с прода index 35a2564d, app.js a4b3c3d9, styles 78f7faa3 = HEAD; SHEET_OUT 2, ease-in 2; признаки входа 0; CLAUDE.md, docs/, checks/, ref/, runs/, листы — 404; шрифт, дюны, styles — 200.
+Следующий шаг: v2 задеплоена — задача закрыта. Новые правки — сначала Figma/спека, потом код, потом пересчёт sha.
 Открытые вопросы: (пусто)
 Нельзя забыть:
+- vercel link при первом деплое дописал .vercel в .gitignore — закоммичено отдельно, иначе (а) рвётся на грязном дереве.
 - Playwright из npx-кэша v1 (путь в checks/_stand.mjs). Под page.clock setTimeout внутри страницы не срабатывает — await такого промиса вешает страж.
 - Эталоны Figma в ref/. Стражи геометрии пишут runs/*.json — прогнать их перед compare-board.
 - deploy-dunes.txt: sha по файлам на диске (CRLF). Любая правка index/app/styles после 0e6802d — пересчитать sha в строках 4, 7, 9.
