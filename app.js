@@ -24,6 +24,8 @@ const SMART = ms => ['smart', ms];
 const DISSOLVE = ms => ['dissolve', ms];
 const SHEET_IN = ms => ['sheet-in', ms];
 const SHEET_OUT = ms => ['sheet-out', ms];
+// закрытие шторки быстрее и с разгоном (решение Баатра): выезд 240 ease-out, уезд 160 ease-in
+const SHEET_CLOSE = { duration: 160, easing: 'ease-in' };
 const CALC_MS = 1500;           // 3 → 4: After delay 1,5 s
 
 const BUILT = new Set(['home', '1', '2', '3', '4', '5', '6']);
@@ -178,7 +180,7 @@ function go(next, motion) {
   const prev = state;
   if (!motion) { state = next; applyState(); return; }
   const [kind, ms] = motion;
-  const opt = { duration: ms, easing: 'ease-out' };
+  const opt = kind === 'sheet-out' ? SHEET_CLOSE : { duration: ms, easing: 'ease-out' };
   if (kind === 'sheet-in' || kind === 'sheet-out') { moveSheet(kind, next, opt); return; }
 
   const ghost = phone.cloneNode(true);
@@ -300,7 +302,7 @@ phone.addEventListener('click', e => {
   }
   const k = e.target.closest('[data-k]')?.dataset.k;
   if (k === 'cta') { amount = FRAME_AMOUNT[1]; go('1', SHEET_IN(240)); }
-  else if (k === 'sh-close') go('home', SHEET_OUT(240));
+  else if (k === 'sh-close') go('home', SHEET_OUT(SHEET_CLOSE.duration));
   else if (k === 'cont' && state === '1' && amount > 0) go('2', SMART(240));
   else if (k === 'back') go('1', SMART(240));
   else if (k === 'confirm') go('3', DISSOLVE(240));

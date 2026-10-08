@@ -45,7 +45,7 @@ const SPOILS = {
   // шторка при открытии только проявляется, а не выезжает — поток обязан покраснеть
   sheetslide: ['app.js', "else sh.animate([{ transform: down(sh) }, { transform: 'none' }], opt);", "else sh.animate([{ opacity: 0 }, { opacity: 1 }], opt);"],
   // крестик снова мгновенный — шторка пропадает сразу
-  closenow: ['app.js', "go('home', SHEET_OUT(240))", "go('home')"],
+  closenow: ['app.js', "go('home', SHEET_OUT(SHEET_CLOSE.duration))", "go('home')"],
   // закрытие шторки снова ease-out (240 вместо ease-in 160) — поток обязан покраснеть
   closeease: ['app.js', "const SHEET_CLOSE = { duration: 160, easing: 'ease-in' };", "const SHEET_CLOSE = { duration: 240, easing: 'ease-out' };"],
   // Done снова без Dissolve
