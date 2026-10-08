@@ -83,17 +83,16 @@
 ## Статус
 Обновлено: 2026-10-09
 Сделано:
-- s1 — 6ba3c67, s1-fix 61df57d; s2 — c3fb7cf, s2-behavior b4bae01; s3 — f8b404d (подробности — в истории git, стражи зелёные на fb6a619).
-- s4-П1 — spec cf8be46, страж f84cf3e (flow), код 42f9a10: шторка выезжает/уезжает 240 ease-out с затемнением, Done → Dissolve 240. flow 40/40; на старом коде 10 красных; порчи sheetslide (1), closenow (6), donenow (2).
-- s4-П2 — fb6a619: лист compare-board-home-1-2-3-4-5-6.png, 14 состояний, геометрия >2px: 0 во всех; средняя разница 1,9–3,1/255. Кадры шторки: transitions-sheet-night/day.png (открытие 60/120 мс, закрытие 60/120 мс).
-- s4-П3 — contrast 18/18, все 6 эталонов Figma совпали до 0,01 (число 9.77/7.20 … ошибка 7.12/6.42); порча upc краснеет. tap-targets: все кнопки 14 состояний ≥ 44.
-- s4-П4 — deploy-dunes.txt в ufuq-case-review: sha index 35a2564d, app.js 0a08e090, styles.css 78f7faa3; не запускался.
-Следующий шаг: визуальная приёмка Баатром (лист 14 состояний, кадры шторки, живой прогон Home→1→2→3→4→Home и крестик с 1/5/6), затем деплой по deploy-dunes.txt (а → б).
-Открытые вопросы:
-- Закрытие шторки идёт ease-out (как всё в спеке): движение в начале быстрое, к низу замедляется. «Обратно» буквально было бы ease-in. Решить глазами по transitions-sheet-*.png.
+- s1 — 6ba3c67, s1-fix 61df57d; s2 — c3fb7cf, s2-behavior b4bae01; s3 — f8b404d (подробности — в истории git).
+- s4-П1 — spec cf8be46, страж f84cf3e, код 42f9a10: шторка выезжает 240 ease-out с затемнением, Done → Dissolve 240.
+- s4-П2 — fb6a619: лист 14 состояний, геометрия >2px: 0. s4-П3 — 47eaf2c: contrast 18/18, tap-targets зелёные.
+- s4-П4 — deploy-dunes.txt в ufuq-case-review (sha app.js там СТАРЫЙ 0a08e090 — см. «Нельзя забыть»).
+- s4-П5 — spec 00df931, страж e750f59 (красный на старом коде 6 из 40), код 18d3c4c, кадры 06e28a7: крестик → Home 160 ease-in, затемнение гаснет за 160. flow 40/40; порчи closeease (6), closenow (6), sheetslide (1), donenow (2). Остальные 9 стражей зелёные.
+Следующий шаг: Баатр смотрит transitions-sheet-night/day.png (открытие 60/120/180, закрытие 40/80/120) и живой крестик с 1/5/6. После «да» — пересчитать sha в deploy-dunes.txt (app.js a4b3c3d9), затем деплой (а → б).
+Открытые вопросы: (пусто — ease закрытия решён 2026-10-09: ease-in 160)
 Нельзя забыть:
-- Playwright берётся из npx-кэша v1 (путь в checks/_stand.mjs). Под page.clock setTimeout внутри страницы не срабатывает — await такого промиса вешает страж.
-- Эталоны Figma в ref/ (home-*, s1–s6-*). Стражи геометрии пишут runs/*.json — прогнать их перед compare-board.
-- `el.hidden` не работает на <svg> — видимость через toggleAttribute('hidden').
-- FLIP: новые координаты снимать до запуска любой анимации (порча flipnow); сегменты полос — scaleX, не width.
-- sha в deploy-dunes.txt — по файлам на диске (CRLF); любая правка index/app/styles → пересчитать.
+- Playwright из npx-кэша v1 (путь в checks/_stand.mjs). Под page.clock setTimeout внутри страницы не срабатывает — await такого промиса вешает страж.
+- Эталоны Figma в ref/. Стражи геометрии пишут runs/*.json — прогнать их перед compare-board.
+- `el.hidden` не работает на <svg> — toggleAttribute('hidden'). FLIP: новые координаты снимать до запуска анимации (flipnow); сегменты — scaleX.
+- deploy-dunes.txt: sha по файлам на диске (CRLF). После П5 app.js = a4b3c3d9 (index 35a2564d, styles 78f7faa3 без изменений) — в файле ещё 0a08e090.
+- Кадры шторки зеркальны (y 592/387/239 ↔ 239/387/592): CSS ease-in и ease-out — точное отражение, кадры 1/4 и 3/4 времени это показывают. Не баг.
