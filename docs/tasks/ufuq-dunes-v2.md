@@ -67,17 +67,28 @@
 - s2, цвета без переменных: scrim (Night rgba 6,9,20,.55 / Day rgba 42,36,51,.32); небо шторки (Night как на Home; Day #e6d8cc→#eebb9b **55%**→#da977f — на Home дневное 50%). В CSS помечены «не переменная».
 - s2, полосы: последний сегмент — остаток, а не округление (111+159+74 = 344; при округлении upcoming был бы 75). В 5 шкала = 9 000 + нехватка: покрыто 7 050, нехватка 350, upcoming остаток (259+13+72). Так посчитано и на Home (50+201+69).
 - s2: в Home за шторкой фрейма 6 Night (90:7090) есть «evening star» 3×3 — на Home 90:8017 её нет. Шторка её закрывает, в коде не переносили.
+- s3, размытие: в Figma Background blur у Ground = 24; Figma сама выводит его в CSS как blur(12px) — в коде 12. Строка спеки «backdrop-filter: blur(24px)» неточна: 24 — значение в Figma, не в CSS.
+- s3, цвета без переменных: заливка Ground днём rgba(255,255,255,.87) (ночью — переменная card). В CSS --glass, помечена «не переменная».
+- s3, заголовок «Calculating impact…»: в Night текстовый слой растянут на 358 (fill), в Day — по тексту 197. Текст и позиция те же; ширина не сверяется (null в ref/impact.rects.json).
+- s3, ширины слов: Figma держит auto-width текст в целых пикселях (ceil: 10.63→11, 44.27→45, 145.28→146). Строки карточки 4 — из отдельных слов, без ceil уезжали на 2 px. В коде ширина слова в .imp-line = ceil(естественной), после загрузки Inter.
+- s3, цифры 4 считаются: в день = round(остаток / 23), 23 дня = 4 Sep → 27 Sep с Home (5 650/23 = 246, 4 150/23 = 180 — как в кадре). Полоса 3/4 — Bar 326 → 320, как на Home.
+- s3, переходы — из reactions прототипа Figma (use_figma, только чтение): 1→2 и 2→1 Smart animate 240 ease-out; 2→3 Dissolve 240 ease-out; 3→4 After delay 1,5 s, Smart animate 240; клавиши 1→5/6 и ⌫ 5/6→1 Smart animate 160. Связей Home→1, крестик→Home, Done→Home в Figma нет — в коде без анимации (см. открытые вопросы). Keyframe-анимаций (get_motion_context) нет.
+- s3, Smart animate 3→4: пар слоёв нет (Frame 1 › Ground ≠ Ground, Frame 1 › Title ≠ Sky › Title) — Figma такие растворяет; общий только «Scene · vector»: старые дюны гаснут поверх новых, без провала.
 
 ## Статус
 Обновлено: 2026-10-09
 Сделано:
 - s1 — 6ba3c67; s1-fix 61df57d: tnum убран (Figma главнее), полоса 326 по Figma, эталоны Home перекачаны. home-geometry 47/47 + 48/48, home-colors 35/35 + 35/35. Порча SPOIL=tnum → 14 красных.
-- s2 — c3fb7cf: шторка 1, 2, 5, 6, клавиатура, логика суммы. sheet-geometry 21/20/24/20 в обеих темах, sheet-colors 24/22/25/22, amount-logic 16/16, tap-targets home+1,2,5,6 всё ≥ 44. Порчи: sheetpad, limit, keytap, destr — все краснеют. Лист: compare-board-1-2-5-6.png, геометрия >2px: 0 во всех 8.
-Следующий шаг: s3 — состояния 3, 4 (SVG-дюны из «Scene · vector», матовая карточка), все переходы; Confirm (2) → 3. Начать с get_metadata 90:7298 / 90:7926.
-Открытые вопросы: (пусто)
+- s2 — c3fb7cf: шторка 1, 2, 5, 6, клавиатура, логика суммы. sheet-geometry, sheet-colors, amount-logic, tap-targets — зелёные. Лист: compare-board-1-2-5-6.png, геометрия >2px: 0.
+- s2-behavior — b4bae01: сумма 0 → Continue неактивна, ведущий 0 игнорируется, максимум 6 цифр; правило в CLAUDE.md. amount-logic 21/21; порчи zero (2 красных), maxlen (3).
+- s3 — f8b404d: экраны 3, 4 (дюны «Scene · vector» как есть, матовая карточка), переходы по прототипу Figma. impact-geometry 7/7 + 17/17 в обеих темах, impact-colors зелёное, flow 28/28, tap-targets с 3 и 4 — всё ≥ 44. Порчи calcpos, blur, dissolve, timer, flipnow, scenefade — каждая краснеет в своём правиле. Лист: compare-board-3-4.png, геометрия >2px: 0 во всех 4; кадры середины переходов: transitions-mid-night.png / -day.png.
+Следующий шаг: s4 — полный лист сверки 14 состояний (compare-board.mjs home 1 2 3 4 5 6), контраст по токенам (эталоны в «Приёмке»), зоны, deploy-dunes.txt. Начать с решения по открытым вопросам.
+Открытые вопросы:
+- Переходы Home→1 (Transfer by phone number), крестик→Home (1, 5, 6), Done→Home: связей в Figma нет, сейчас мгновенно. Нужна связь в Figma (тип, длительность) — или так и оставить?
+- Smart animate 1↔2, 1↔5/6: исчезающие слои (клавиатура, строка ошибки) гаснут на старом месте, а не едут со шторкой. Проверить глазами по transitions-mid-*.png, при сомнении — сравнить с Present в Figma.
 Нельзя забыть:
-- Playwright берётся из npx-кэша v1 (путь в checks/_stand.mjs); отдельной установки нет.
-- Эталоны Figma в ref/ (home-*, s1/s2/s5/s6-*); ассеты Figma живут 7 дней.
-- `el.hidden` не работает на <svg> — видимость через toggleAttribute('hidden') (app.js).
+- Playwright берётся из npx-кэша v1 (путь в checks/_stand.mjs); отдельной установки нет. Состояние 3 в стражах держится page.clock (пауза до загрузки), иначе через 1,5 с уходит в 4.
+- Эталоны Figma в ref/ (home-*, s1–s6-*); ассеты Figma живут 7 дней.
+- `el.hidden` не работает на <svg> — видимость через toggleAttribute('hidden') (app.js); в снимке перехода — hasAttribute('hidden').
 - Шорткат `font:` в .t-* сбрасывает font-variant-numeric — правило на предке не доходит до текста.
-- Запуск листа: сначала home-geometry / sheet-geometry, потом compare-board.mjs [состояния].
+- FLIP: новые координаты снимать до запуска любой анимации (порча flipnow); сегменты полос — transform scaleX, не width (иначе соседи прыгают).
