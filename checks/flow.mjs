@@ -1,7 +1,9 @@
 // Поток 1 → 2 → 3 → 4 → Home и переходы — против прототипа Figma (reactions фреймов Page 2):
 //   1→2 Continue, 2→1 Back, 3→4 через 1,5 с — Smart animate 240 мс ease-out;
 //   2→3 Confirm — Dissolve 240 мс ease-out; клавиши 1↔5/6 — Smart animate 160 мс ease-out.
-//   Home→1, крестик→Home, Done→Home — связей в Figma нет: без анимации (открытый вопрос в спеке).
+//   Done→Home — Dissolve 240 мс ease-out (как в Figma).
+//   Home→1 и крестик (1/5/6)→Home — решение Баатра (в Figma Dissolve, записано в «Расхождения»):
+//   шторка выезжает снизу / уезжает вниз 240 мс ease-out, затемнение проявляется / гаснет.
 // Каждый вызов Element.animate() пишется в window.__anims: длительность, кривая, анимируемые свойства.
 // prefers-reduced-motion → только прозрачность. Любое расхождение — красное.
 import { openState, line } from './_stand.mjs';
@@ -10,7 +12,7 @@ const REC = `window.__anims = [];
 const _a = Element.prototype.animate;
 Element.prototype.animate = function (kf, o) {
   const props = [...new Set((Array.isArray(kf) ? kf : [kf]).flatMap(f => Object.keys(f)).filter(p => !['offset', 'easing', 'composite'].includes(p)))];
-  window.__anims.push({ d: typeof o === 'number' ? o : o?.duration, e: o?.easing || 'linear', props, k: this.dataset?.k || '' });
+  window.__anims.push({ d: typeof o === 'number' ? o : o?.duration, e: o?.easing || 'linear', props, k: this.dataset?.k || '', c: typeof this.className === 'string' ? this.className : '' });
   return _a.call(this, kf, o);
 };`;
 
@@ -80,8 +82,70 @@ async function run(reduced) {
     if (uniq.length) { red++; line(`КРАСНОЕ [${tag}] ${what}: ${uniq.join('; ')}`); } else line(`ок [${tag}] ${what}`);
   }
 
+  // Шторка: в момент 0 и в конце — где стоит шторка и сколько затемнения.
+  // open: шторка за нижним краем телефона, затемнение 0 → шторка на месте, затемнение 1.
+  // close: снимок шторки на старом месте, затемнение 1 → за нижним краем, 0; Home уже живой.
+  // reduce: шторка не едет, только прозрачность.
+  const SH = () => page.evaluate(() => {
+    const p = document.getElementById('phone').getBoundingClientRect();
+    const pick = s => [...document.querySelectorAll(s)].find(el => el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden');
+    const sh = pick('.ghost .sheet') || pick('#phone > .sheet');
+    const sc = pick('.ghost .scrim') || pick('#phone > .scrim');
+    const g = document.querySelector('.ghost');
+    const op = el => { let o = 1; for (let x = el; x && x !== document.body; x = x.parentElement) o *= +getComputedStyle(x).opacity; return o; };
+    return { h: p.height, y: sh ? sh.getBoundingClientRect().y - p.y : null, sc: sc ? op(sc) : null, sh: sh ? op(sh) : null, ghost: !!g };
+  });
+  async function sheetMotion(what, dir, act, state) {
+    n++;
+    const bad = [];
+    await page.evaluate(() => { for (const x of document.getAnimations()) x.finish(); });
+    const rest = await SH();
+    await page.evaluate(() => { window.__anims = []; });
+    await act();
+    const s = await st();
+    if (s !== state) bad.push(`состояние ${s}, ждали ${state}`);
+    const a = await anims();
+    if (!a.length) bad.push('анимаций нет');
+    for (const x of a) {
+      if (x.d !== 240) bad.push(`длительность ${x.d}, ждали 240`);
+      if (x.e !== 'ease-out') bad.push(`кривая ${x.e}, ждали ease-out`);
+      if (reduced) for (const p of x.props) if (p !== 'opacity') bad.push(`анимируется ${p}, ждали только opacity`);
+    }
+    await page.evaluate(() => { for (const x of document.getAnimations()) { x.pause(); x.currentTime = 0; } });
+    const t0 = await SH();
+    await page.evaluate(() => { for (const x of document.getAnimations()) x.currentTime = 239.9; });
+    const t1 = await SH();
+    await page.evaluate(() => { for (const x of document.getAnimations()) x.finish(); });
+    const fin = await SH();
+    const from = t0, to = t1;
+    const near = (v, w) => v != null && Math.abs(v - w) <= 1;
+    const off = v => v != null && v >= rest.h - 1;
+    if (dir === 'open') {
+      if (!near(from.sc, 0)) bad.push(`затемнение в момент 0: ${from.sc}, ждали 0`);
+      if (!near(fin.sc, 1)) bad.push(`затемнение после перехода ${fin.sc}, ждали 1`);
+      if (reduced) { if (!near(from.y, fin.y)) bad.push(`reduce: шторка едет (y0 ${from.y?.toFixed(1)}, итог ${fin.y?.toFixed(1)})`); }
+      else if (!off(from.y)) bad.push(`шторка в момент 0 на y ${from.y?.toFixed(1)}, ждали за нижним краем (≥ ${rest.h - 1})`);
+    } else {
+      if (!t0.ghost) bad.push('снимка уходящей шторки нет — шторка пропала сразу');
+      if (!near(from.sc, 1)) bad.push(`затемнение в момент 0: ${from.sc}, ждали 1`);
+      if (!near(from.y, rest.y)) bad.push(`шторка в момент 0 на y ${from.y?.toFixed(1)}, ждали ${rest.y?.toFixed(1)}`);
+      if (reduced) { if (!near(to.y, rest.y)) bad.push(`reduce: шторка едет (y ${to.y?.toFixed(1)})`); if (to.sh > 0.02) bad.push(`reduce: шторка в конце видна (${to.sh})`); }
+      else if (!off(to.y)) bad.push(`шторка в конце на y ${to.y?.toFixed(1)}, ждали за нижним краем`);
+      if (to.sc > 0.02) bad.push(`затемнение в конце ${to.sc}, ждали 0`);
+    }
+    const uniq = [...new Set(bad)];
+    if (uniq.length) { red++; line(`КРАСНОЕ [${tag}] ${what}: ${uniq.join('; ')}`); } else line(`ок [${tag}] ${what}`);
+  }
+  await sheetMotion('Home → 1: шторка выезжает снизу, затемнение проявляется', 'open', () => tap('cta'), '1');
+  for (const from of ['1', '5', '6']) {
+    if (from !== '1') { await page.click(`#states [data-state="${from}"]`); }
+    await sheetMotion(`${from} → крестик → Home: шторка уезжает вниз, затемнение гаснет`, 'close', () => tap('sh-close'), 'home');
+    n++;
+    const ok = await page.evaluate(() => !document.querySelector('#phone .screen').inert);
+    if (!ok) { red++; line(`КРАСНОЕ [${tag}] ${from} → Home: Home не живой во время ухода шторки`); } else line(`ок [${tag}] ${from} → Home: Home живой сразу`);
+    await page.evaluate(() => { for (const x of document.getAnimations()) x.finish(); });
+  }
   await tap('cta');
-  await expect('Home → 1: связи в Figma нет — без анимации', '1', 'none');
   await key('0');
   await expect('1 → «0» → 5: smart 160', '5', ['smart', 160]);
   await key('del');
@@ -115,7 +179,7 @@ async function run(reduced) {
   if ((await anims()).some(x => x.k === 'scene')) { red++; line(`КРАСНОЕ [${tag}] 3 → 4: дюны проявляются с нуля — «Scene · vector» один слой, должен стоять под гаснущим`); }
   else line(`ок [${tag}] 3 → 4: дюны не проявляются с нуля`);
   await tap('done');
-  await expect('4 → Done → Home: связи в Figma нет — без анимации', 'home', 'none');
+  await expect('4 → Done → Home: dissolve 240', 'home', ['dissolve', 240]);
 
   if (!reduced) {
     await tap('cta'); await key('del'); await key('del');
