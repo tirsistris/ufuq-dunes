@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ufuq · Dunes</title>
+<link rel="preload" href="fonts/InterVariable-3.19.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Иконки — контуры из Figma (пак Миши Наера, round), цвет через currentColor. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-riyal" viewBox="0 0 24 26"><path fill="currentColor" d="M14.8465 23.0331C14.4314 23.9536 14.157 24.9525 14.0518 26L22.8367 24.1326C23.2519 23.2123 23.5261 22.2132 23.6314 21.1656L14.8465 23.0331Z"/><path fill="currentColor" d="M22.8367 18.5379C23.2519 17.6176 23.5263 16.6185 23.6314 15.5709L16.7882 17.0264V14.2285L22.8365 12.9432C23.2516 12.0229 23.5261 11.0238 23.6312 9.97626L16.788 11.4304V1.36851C15.7394 1.95726 14.8082 2.74095 14.0512 3.66536V12.0124L11.3144 12.5941V0C10.2658 0.588543 9.33459 1.37244 8.57759 2.29685V13.1756L2.45397 14.4768C2.03884 15.3971 1.76423 16.3962 1.6589 17.4438L8.57759 15.9734V19.4968L1.16286 21.0725C0.747729 21.9928 0.473324 22.9919 0.368197 24.0394L8.12935 22.3901C8.76115 22.2587 9.30416 21.8852 9.65721 21.3711L11.0806 19.2609V19.2605C11.2283 19.0422 11.3144 18.779 11.3144 18.4955V15.3917L14.0512 14.81V20.4057L22.8365 18.5375L22.8367 18.5379Z"/></symbol>
+  <symbol id="i-person" viewBox="0 0 20 20" fill="none"><path stroke="currentColor" stroke-width="1.51515" d="M13.3333 6.66663C13.3333 8.50758 11.8409 9.99996 10 9.99996C8.15905 9.99996 6.66666 8.50758 6.66666 6.66663C6.66666 4.82568 8.15905 3.3333 10 3.3333C11.8409 3.3333 13.3333 4.82568 13.3333 6.66663Z"/><path stroke="currentColor" stroke-width="1.51515" stroke-linecap="round" d="M3.75 17.0833C4.75 14.0833 7.08333 12.5 10 12.5C12.9167 12.5 15.25 14.0833 16.25 17.0833"/></symbol>
+  <symbol id="i-search" viewBox="0 0 20 20"><path fill="currentColor" d="M9.16667 1.66667C10.5786 1.66711 11.9618 2.06613 13.1571 2.81782C14.3523 3.56952 15.3111 4.64335 15.9232 5.9158C16.5352 7.18825 16.7756 8.60762 16.6167 10.0106C16.4578 11.4136 15.9061 12.7433 15.025 13.8467L18.0892 16.9108L18.1458 16.9742C18.2747 17.1343 18.3398 17.3363 18.3287 17.5415C18.3176 17.7467 18.2311 17.9405 18.0858 18.0858C17.9405 18.2311 17.7467 18.3176 17.5415 18.3287C17.3363 18.3398 17.1343 18.2747 16.9742 18.1458L16.9108 18.0892L13.8467 15.025C12.9107 15.7732 11.809 16.2862 10.634 16.5211C9.45893 16.756 8.24471 16.706 7.09299 16.3751C5.94128 16.0443 4.88561 15.4423 4.01438 14.6196C3.14316 13.7969 2.48175 12.7774 2.08555 11.6465C1.68934 10.5156 1.56988 9.30619 1.73717 8.11963C1.90446 6.93308 2.35362 5.80387 3.04704 4.8266C3.74047 3.84932 4.65796 3.05242 5.72269 2.50264C6.78741 1.95286 7.96837 1.6662 9.16667 1.66667ZM9.16667 3.33333C8.40062 3.33333 7.64208 3.48422 6.93435 3.77737C6.22661 4.07052 5.58355 4.5002 5.04188 5.04188C4.5002 5.58355 4.07052 6.22661 3.77737 6.93435C3.48422 7.64208 3.33333 8.40062 3.33333 9.16667C3.33333 9.93271 3.48422 10.6913 3.77737 11.399C4.07052 12.1067 4.5002 12.7498 5.04188 13.2915C5.58355 13.8331 6.22661 14.2628 6.93435 14.556C7.64208 14.8491 8.40062 15 9.16667 15C10.7138 15 12.1975 14.3854 13.2915 13.2915C14.3854 12.1975 15 10.7138 15 9.16667C15 7.61957 14.3854 6.13584 13.2915 5.04188C12.1975 3.94791 10.7138 3.33333 9.16667 3.33333Z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 20 20"><path fill="currentColor" d="M11.7675 16.7675C11.9247 16.6157 12.1352 16.5317 12.3537 16.5336C12.5722 16.5355 12.7812 16.6231 12.9357 16.7777C13.0902 16.9322 13.1778 17.1412 13.1797 17.3597C13.1816 17.5782 13.0976 17.7887 12.9458 17.9458C12.1645 18.727 11.1049 19.1658 10 19.1658C8.89515 19.1658 7.83553 18.727 7.05417 17.9458C6.97458 17.869 6.91109 17.777 6.86742 17.6753C6.82374 17.5737 6.80075 17.4643 6.79979 17.3537C6.79883 17.243 6.81992 17.1333 6.86182 17.0309C6.90372 16.9285 6.96559 16.8354 7.04384 16.7572C7.12208 16.6789 7.21513 16.617 7.31754 16.5751C7.41995 16.5332 7.52969 16.5122 7.64033 16.5131C7.75098 16.5141 7.86033 16.5371 7.962 16.5807C8.06367 16.6244 8.15563 16.6879 8.2325 16.7675C8.70132 17.2362 9.33709 17.4995 10 17.4995C10.6629 17.4995 11.2987 17.2362 11.7675 16.7675ZM10 0.833333C11.3261 0.833333 12.5979 1.36012 13.5355 2.2978C14.4732 3.23548 15 4.50725 15 5.83333V8.15833C15 8.53083 15.175 8.88167 15.4725 9.105L15.7475 9.31083C16.2914 9.71896 16.7329 10.248 17.0371 10.8562C17.3412 11.4644 17.4997 12.135 17.5 12.815C17.5002 13.102 17.4439 13.3862 17.3341 13.6514C17.2244 13.9166 17.0635 14.1576 16.8605 14.3605C16.6576 14.5635 16.4166 14.7244 16.1514 14.8341C15.8862 14.9439 15.602 15.0002 15.315 15H4.685C4.398 15.0002 4.11377 14.9439 3.84858 14.8341C3.58338 14.7244 3.34242 14.5635 3.13948 14.3605C2.93654 14.1576 2.77561 13.9166 2.66588 13.6514C2.55615 13.3862 2.49978 13.102 2.5 12.815C2.5 11.4358 3.14917 10.1375 4.2525 9.31083L4.5275 9.105C4.67431 8.99469 4.79344 8.85172 4.87545 8.68742C4.95745 8.52311 5.0001 8.34197 5 8.15833V5.83333C5 4.50725 5.52678 3.23548 6.46447 2.2978C7.40215 1.36012 8.67392 0.833333 10 0.833333ZM10 2.5C9.11595 2.5 8.2681 2.85119 7.64298 3.47631C7.01786 4.10143 6.66667 4.94928 6.66667 5.83333V8.15833C6.66654 8.60064 6.56346 9.03685 6.3656 9.43243C6.16773 9.82801 5.88051 10.1721 5.52667 10.4375L5.25167 10.6442C4.91491 10.8971 4.64159 11.2249 4.45329 11.6017C4.26498 11.9784 4.16686 12.3938 4.16667 12.815C4.16667 13.1008 4.39917 13.3333 4.685 13.3333H15.315C15.3831 13.3336 15.4506 13.3203 15.5136 13.2943C15.5766 13.2684 15.6338 13.2302 15.682 13.182C15.7302 13.1338 15.7684 13.0766 15.7943 13.0136C15.8203 12.9506 15.8336 12.8831 15.8333 12.815C15.8333 11.9608 15.4308 11.1567 14.7475 10.6442L14.4733 10.4375C14.1195 10.1721 13.8323 9.82801 13.6344 9.43243C13.4365 9.03685 13.3335 8.60064 13.3333 8.15833V5.83333C13.3333 4.94928 12.9821 4.10143 12.357 3.47631C11.7319 2.85119 10.8841 2.5 10 2.5Z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 15 15" fill="none"><path stroke="currentColor" stroke-width="1.25" d="M13.125 7.5C13.125 10.6066 10.6066 13.125 7.5 13.125C4.3934 13.125 1.875 10.6066 1.875 7.5C1.875 4.3934 4.3934 1.875 7.5 1.875C10.6066 1.875 13.125 4.3934 13.125 7.5Z"/><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" d="M7.5 4.37504V7.50004L9.375 8.75004"/></symbol>
+  <symbol id="i-calendar-solid" viewBox="0 0 24 24"><path fill="currentColor" d="M16 1.5C16.2652 1.5 16.5196 1.60536 16.7071 1.79289C16.8946 1.98043 17 2.23478 17 2.5V3H19C19.7956 3 20.5587 3.31607 21.1213 3.87868C21.6839 4.44129 22 5.20435 22 6V19C22 19.7957 21.6839 20.5587 21.1213 21.1213C20.5587 21.6839 19.7956 22 19 22H5C4.20435 22 3.44129 21.6839 2.87868 21.1213C2.31607 20.5587 2 19.7957 2 19V6C2 5.20435 2.31607 4.44129 2.87868 3.87868C3.44129 3.31607 4.20435 3 5 3H7V2.5C7 2.23478 7.10536 1.98043 7.29289 1.79289C7.48043 1.60536 7.73478 1.5 8 1.5C8.26522 1.5 8.51957 1.60536 8.70711 1.79289C8.89464 1.98043 9 2.23478 9 2.5V3H15V2.5C15 2.23478 15.1054 1.98043 15.2929 1.79289C15.4804 1.60536 15.7348 1.5 16 1.5ZM5 9C4.73478 9 4.48043 9.10536 4.29289 9.29289C4.10536 9.48043 4 9.73478 4 10C4 10.2652 4.10536 10.5196 4.29289 10.7071C4.48043 10.8946 4.73478 11 5 11H19C19.2652 11 19.5196 10.8946 19.7071 10.7071C19.8946 10.5196 20 10.2652 20 10C20 9.73478 19.8946 9.48043 19.7071 9.29289C19.5196 9.10536 19.2652 9 19 9H5Z"/></symbol>
+  <symbol id="i-arrows-line" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.81818" stroke-linecap="round" stroke-linejoin="round" d="M4.00001 7.99996H19M15 12L19 7.99996L15 3.99996M20 16H5.00001M9.00001 20L5.00001 16L9.00001 12"/></symbol>
+  <symbol id="i-person-line" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.81818" d="M16 7.99996C16 10.2091 14.2091 12 12 12C9.79086 12 7.99999 10.2091 7.99999 7.99996C7.99999 5.79082 9.79086 3.99996 12 3.99996C14.2091 3.99996 16 5.79082 16 7.99996Z"/><path stroke="currentColor" stroke-width="1.81818" stroke-linecap="round" d="M4.5 20.5C5.7 16.9 8.5 15 12 15C15.5 15 18.3 16.9 19.5 20.5"/></symbol>
+  <symbol id="i-signal" viewBox="0 0 18 18"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M17.28 4.97914C17.28 4.40932 16.8502 3.9474 16.32 3.9474H15.36C14.8298 3.9474 14.4 4.40932 14.4 4.97914V13.9209C14.4 14.4907 14.8298 14.9526 15.36 14.9526H16.32C16.8502 14.9526 17.28 14.4907 17.28 13.9209V4.97914ZM10.5893 6.14844H11.5493C12.0795 6.14844 12.5093 6.62146 12.5093 7.20495V13.8961C12.5093 14.4796 12.0795 14.9526 11.5493 14.9526H10.5893C10.0591 14.9526 9.62928 14.4796 9.62928 13.8961V7.20495C9.62928 6.62146 10.0591 6.14844 10.5893 6.14844ZM6.6907 8.5329H5.73071C5.20051 8.5329 4.7707 9.0119 4.7707 9.60283V13.8826C4.7707 14.4736 5.20051 14.9526 5.73071 14.9526H6.6907C7.2209 14.9526 7.6507 14.4736 7.6507 13.8826V9.60283C7.6507 9.0119 7.2209 8.5329 6.6907 8.5329ZM1.92 10.7339H0.960003C0.429807 10.7339 0 11.2061 0 11.7886V13.8979C0 14.4804 0.429807 14.9526 0.960003 14.9526H1.92C2.4502 14.9526 2.88 14.4804 2.88 13.8979V11.7886C2.88 11.2061 2.4502 10.7339 1.92 10.7339Z"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 18 18"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M8.61417 5.22205C10.8526 5.22214 13.0054 6.05202 14.6276 7.54016C14.7498 7.65504 14.945 7.65359 15.0654 7.53691L16.2331 6.39978C16.294 6.3406 16.328 6.26043 16.3275 6.17702C16.327 6.09361 16.2921 6.01383 16.2304 5.95533C11.9725 2.01809 5.25516 2.01809 0.997252 5.95533C0.935566 6.01378 0.900574 6.09354 0.900007 6.17695C0.899436 6.26037 0.933343 6.34056 0.994219 6.39978L2.16229 7.53691C2.28253 7.65377 2.47794 7.65522 2.60004 7.54016C4.2225 6.05193 6.37555 5.22204 8.61417 5.22205ZM8.61115 9.02031C9.83277 9.02022 11.0107 9.48084 11.9163 10.3125C12.0387 10.4305 12.2316 10.428 12.3511 10.3068L13.5095 9.1194C13.5706 9.05712 13.6045 8.97259 13.6036 8.88479C13.6027 8.797 13.5671 8.71323 13.5049 8.65222C10.7474 6.05045 6.47719 6.05045 3.71974 8.65222C3.65745 8.71323 3.62191 8.79704 3.6211 8.88487C3.62028 8.97269 3.65425 9.05721 3.7154 9.1194L4.87362 10.3068C4.993 10.428 5.18593 10.4305 5.30841 10.3125C6.21331 9.48138 7.39037 9.02085 8.61115 9.02031ZM10.8832 11.5345C10.8849 11.6293 10.8515 11.7208 10.7909 11.7872L8.83194 13.9964C8.77451 14.0613 8.69622 14.0978 8.61453 14.0978C8.53284 14.0978 8.45454 14.0613 8.39711 13.9964L6.43779 11.7872C6.37726 11.7207 6.34397 11.6292 6.34576 11.5345C6.34755 11.4396 6.38428 11.3498 6.44727 11.2862C7.69836 10.1037 9.53073 10.1037 10.7818 11.2862C10.8447 11.3499 10.8814 11.4397 10.8832 11.5345Z"/></symbol>
+  <symbol id="i-battery" viewBox="0 0 25 18"><path fill="currentColor" d="M16.5179 3.6C18.3487 3.6 19.2641 3.60023 19.9837 3.90849C20.8985 4.30034 21.6266 5.03436 22.0154 5.95634C22.3212 6.68174 22.3214 7.60455 22.3214 9.45C22.3214 11.2954 22.3212 12.2182 22.0154 12.9436L21.9387 13.1142C21.535 13.956 20.8413 14.6241 19.9837 14.9915L19.846 15.046C19.1458 15.2999 18.234 15.3 16.5179 15.3H5.80357L4.59071 15.2956C3.52724 15.2812 2.87735 15.2227 2.33764 14.9915C1.4801 14.6241 0.786441 13.956 0.382778 13.1142L0.306047 12.9436C0.000234055 12.2182 0 11.2954 0 9.45C0 7.72009 9.58198e-05 6.80102 0.251988 6.09521L0.306047 5.95634C0.67051 5.09194 1.33333 4.39273 2.16849 3.98584L2.33764 3.90849C2.87735 3.67731 3.52724 3.61885 4.59071 3.60439L5.80357 3.6H16.5179ZM5.80357 4.5C4.8757 4.5 4.22552 4.5002 3.71617 4.53604C3.21536 4.57127 2.91768 4.6378 2.68729 4.73643C1.98524 5.03715 1.42574 5.60112 1.12741 6.30879C1.02956 6.54102 0.963562 6.84108 0.928607 7.3459C0.893054 7.85932 0.892857 8.5147 0.892857 9.45C0.892857 10.3853 0.893054 11.0407 0.928607 11.5541C0.963562 12.0589 1.02956 12.359 1.12741 12.5912C1.42574 13.2988 1.98524 13.8629 2.68729 14.1636C2.91768 14.2622 3.21536 14.3287 3.71617 14.364C4.22552 14.3998 4.8757 14.4 5.80357 14.4H16.5179C17.4457 14.4 18.0959 14.3998 18.6053 14.364C19.1061 14.3287 19.4037 14.2622 19.6341 14.1636C20.3362 13.8629 20.8957 13.2988 21.194 12.5912C21.2919 12.359 21.3579 12.0589 21.3929 11.5541C21.4284 11.0407 21.4286 10.3853 21.4286 9.45C21.4286 8.5147 21.4284 7.85932 21.3929 7.3459C21.3579 6.84108 21.2919 6.54102 21.194 6.30879C20.8957 5.60112 20.3362 5.03715 19.6341 4.73643C19.4037 4.6378 19.1061 4.57127 18.6053 4.53604C18.0959 4.5002 17.4457 4.5 16.5179 4.5H5.80357ZM16.9643 5.4C18.2143 5.4 18.8393 5.40006 19.3168 5.64521C19.7368 5.86093 20.0785 6.20535 20.2924 6.62871C20.5356 7.10999 20.5357 7.74002 20.5357 9V9.9C20.5357 11.16 20.5356 11.79 20.2924 12.2713C20.0785 12.6947 19.7368 13.0391 19.3168 13.2547C18.8393 13.4999 18.2143 13.5 16.9643 13.5H5.35714C4.10716 13.5 3.48213 13.4999 3.00467 13.2547C2.58467 13.0391 2.24298 12.6947 2.02898 12.2713C1.78578 11.79 1.78571 11.16 1.78571 9.9V9C1.78571 7.74002 1.78578 7.10999 2.02898 6.62871C2.24298 6.20535 2.58467 5.86093 3.00467 5.64521C3.48213 5.40006 4.10716 5.4 5.35714 5.4H16.9643ZM23.2143 7.65C23.9328 7.96065 24.4001 8.68363 24.4001 9.48429C24.4 10.2847 23.9327 11.007 23.2143 11.3177V7.65Z"/></symbol>
+</svg>
+
+<div class="stage">
+  <div class="phone" id="phone" data-theme="night">
+
+    <div class="statusbar" aria-hidden="true">
+      <span class="t-status" data-k="time">9:41</span>
+      <span class="icons">
+        <svg width="18" height="18" data-k="signal"><use href="#i-signal"/></svg>
+        <svg width="18" height="18" data-k="wifi"><use href="#i-wifi"/></svg>
+        <svg width="25" height="18" data-k="battery"><use href="#i-battery"/></svg>
+      </span>
+    </div>
+
+    <main class="screen" data-screen="home">
+      <div class="content">
+
+        <header class="header">
+          <div class="profile">
+            <button class="hit44" aria-label="Profile" data-k="profile">
+              <span class="avatar36" data-k="avatar"><svg width="20" height="20"><use href="#i-person"/></svg></span>
+            </button>
+            <div class="date">
+              <span class="t-footnote-s" data-k="date1">4 September 2026</span>
+              <span class="t-footnote muted" data-k="date2">22 Rabi I 1448 AH</span>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="hit44 icon-btn" aria-label="Search" data-k="search"><svg width="20" height="20"><use href="#i-search"/></svg></button>
+            <button class="hit44 icon-btn" aria-label="Notifications" data-k="bell"><svg width="20" height="20"><use href="#i-bell"/></svg></button>
+          </div>
+        </header>
+
+        <section class="balance" data-k="balance">
+          <div class="sky">
+            <img class="star" src="assets/night/star-a.svg" alt="" style="left:264px;top:28px;width:1.12px;height:1.12px">
+            <img class="star" src="assets/night/star-b.svg" alt="" style="left:340px;top:46px;width:1.12px;height:1.12px">
+            <img class="star" src="assets/night/star-a.svg" alt="" style="left:300px;top:34px;width:1.12px;height:1.12px">
+            <img class="star" src="assets/night/star-c.svg" alt="" style="left:322px;top:78px;width:1.4px;height:1.4px">
+            <img class="star" src="assets/night/star-b.svg" alt="" style="left:286px;top:6px;width:1.12px;height:1.12px">
+            <img class="star" src="assets/night/star-d.svg" alt="" style="left:248px;top:10px;width:1.4px;height:1.4px">
+            <span class="moon" data-k="moon"><img src="assets/day/moon.svg" alt=""></span>
+
+            <span class="t-footnote muted caption" data-k="caption">Current account  ••••  7742</span>
+            <div class="amount">
+              <svg width="24" height="26" data-k="riyal24" aria-hidden="true"><use href="#i-riyal"/></svg>
+              <span class="t-large num" data-k="display">5 650</span>
+              <span class="t-sub muted" data-k="availnow">available now</span>
+            </div>
+            <div class="of-total muted">
+              <span class="t-sub" data-k="of">of</span>
+              <svg width="10.1538" height="11" data-k="riyal10" aria-hidden="true"><use href="#i-riyal"/></svg>
+              <span class="t-sub" data-k="since"><span class="num">9 000</span> since payday</span>
+            </div>
+          </div>
+
+          <div class="horizon">
+            <div class="edge" data-k="hz-edge"></div>
+            <div class="line" data-k="hz-line"></div>
+          </div>
+
+          <div class="ground">
+            <div class="bar" id="bar">
+              <i class="s-spent" data-k="seg-spent"></i>
+              <i class="s-avail" data-k="seg-avail"></i>
+              <i class="s-upcoming" data-k="seg-upcoming"></i>
+            </div>
+            <div class="bar-labels">
+              <div class="l-spent">
+                <span class="t-footnote muted" data-k="lbl-spent">Spent</span>
+                <span class="t-headline num" data-k="val-spent">1 400</span>
+              </div>
+              <div class="l-upcoming">
+                <span class="t-footnote muted" data-k="lbl-upcoming">Upcoming payments</span>
+                <span class="t-headline num" data-k="val-upcoming">1 950</span>
+              </div>
+            </div>
+            <div class="phrase">
+              <span class="t-title3" data-k="around">Around</span>
+              <svg width="13.8462" height="15" data-k="riyal14" aria-hidden="true"><use href="#i-riyal"/></svg>
+              <span class="t-title3-s num" data-k="perday">246</span>
+              <span class="t-title3" data-k="aday">a day</span>
+            </div>
+            <span class="t-sub until" data-k="until">until payday, 27 Sep</span>
+          </div>
+        </section>
+
+        <button class="cta t-headline" data-k="cta" data-go="1">Transfer by phone number</button>
+
+        <h2 class="section-title t-headline" data-k="title-upcoming">Upcoming payments</h2>
+        <div class="group" data-k="group">
+          <div class="pay" data-k="pay1">
+            <div class="date-tile" data-k="tile1"><b class="t-headline">8</b><span class="t-caption">SEP</span></div>
+            <div class="pay-head">
+              <span class="t-body">Mirzan Auto Finance</span>
+              <span class="pay-desc"><svg width="15" height="15" aria-hidden="true"><use href="#i-clock"/></svg><span class="t-sub-s">in 4 days</span></span>
+            </div>
+            <span class="pay-sum"><svg width="12" height="13" aria-hidden="true"><use href="#i-riyal"/></svg><span class="t-headline num">850</span></span>
+          </div>
+          <div class="divider"></div>
+          <div class="pay" data-k="pay2">
+            <div class="date-tile"><b class="t-headline">15</b><span class="t-caption">SEP</span></div>
+            <div class="pay-head"><span class="t-body">Talya Health Cover</span></div>
+            <span class="pay-sum"><svg width="12" height="13" aria-hidden="true"><use href="#i-riyal"/></svg><span class="t-headline num">620</span></span>
+          </div>
+          <div class="divider"></div>
+          <div class="pay" data-k="pay3">
+            <div class="date-tile"><b class="t-headline">22</b><span class="t-caption">SEP</span></div>
+            <div class="pay-head"><span class="t-body">Kharzah International School</span></div>
+            <span class="pay-sum"><svg width="12" height="13" aria-hidden="true"><use href="#i-riyal"/></svg><span class="t-headline num">480</span></span>
+          </div>
+          <div class="divider"></div>
+          <div class="pay" data-k="pay4">
+            <div class="date-tile"><b class="t-headline">28</b><span class="t-caption">SEP</span></div>
+            <div class="pay-head">
+              <span class="t-body">Tarfeen Streaming</span>
+              <span class="pay-desc muted"><span class="t-sub">next cycle</span></span>
+            </div>
+            <span class="pay-sum"><svg width="12" height="13" aria-hidden="true"><use href="#i-riyal"/></svg><span class="t-headline num">250</span></span>
+          </div>
+        </div>
+
+        <h2 class="section-title t-headline" data-k="title-send">Send again</h2>
+        <div class="send-again" data-k="send">
+          <div class="contact"><span class="avatar52 t-title3-s" style="background:var(--avatar-1)">A</span><span class="t-footnote">Abdullah</span></div>
+          <div class="contact"><span class="avatar52 t-title3-s" style="background:var(--avatar-2)">N</span><span class="t-footnote">Noura</span></div>
+          <div class="contact"><span class="avatar52 t-title3-s" style="background:var(--avatar-3)">F</span><span class="t-footnote">Faisal</span></div>
+        </div>
+
+      </div>
+    </main>
+
+    <nav class="tabbar" data-k="tabbar">
+      <div class="tabs">
+        <button class="tab" aria-current="page" data-k="tab1"><svg width="24" height="24" aria-hidden="true"><use href="#i-calendar-solid"/></svg><span class="t-tab-s">Month</span></button>
+        <button class="tab" data-k="tab2"><svg width="24" height="24" aria-hidden="true"><use href="#i-arrows-line"/></svg><span class="t-tab">Transfers</span></button>
+        <button class="tab" data-k="tab3"><svg width="24" height="24" aria-hidden="true"><use href="#i-person-line"/></svg><span class="t-tab">Account</span></button>
+      </div>
+      <div class="home-indicator" data-k="home-ind"></div>
+    </nav>
+  </div>
+
+  <aside class="rail">
+    <div class="rail-group">
+      <span class="rail-label">Theme</span>
+      <div class="seg" id="theme-seg">
+        <button data-theme-pick="auto">Auto</button>
+        <button data-theme-pick="light">Light</button>
+        <button data-theme-pick="dark">Dark</button>
+      </div>
+    </div>
+    <div class="rail-group">
+      <span class="rail-label">States</span>
+      <div class="states" id="states">
+        <button data-state="home">Home</button>
+        <button data-state="1" disabled>1 · Enter amount</button>
+        <button data-state="2" disabled>2 · Confirm</button>
+        <button data-state="3" disabled>3 · Calculating impact</button>
+        <button data-state="4" disabled>4 · Projected impact</button>
+        <button data-state="5" disabled>5 · Not enough money</button>
+        <button data-state="6" disabled>6 · Above channel limit</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

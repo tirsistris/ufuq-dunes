@@ -1,0 +1,305 @@
+/* Ufuq v2 «Дюны». Источник правды — Figma Page 2, коллекция «Fluid / tokens»,
+   режимы Dunes Night / Dunes Day. Значения токенов — как в переменных Figma.
+   Цвета, которых нет в переменных (небо, луна, звёзды, аватары Send again),
+   помечены «не переменная» — см. docs/tasks/ufuq-dunes-v2.md, «Расхождения». */
+
+@font-face {
+  font-family: 'Inter';
+  src: url('fonts/InterVariable-3.19.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}
+
+/* ---------- токены ---------- */
+
+[data-theme='night'] {
+  --background: #0d1324;
+  --foreground: #edf0f8;
+  --muted-foreground: #919dbc;
+  --card: #161f38;
+  --surface-2: #10182d;
+  --accent: #f1f4fb17;
+  --hover: #f1f4fb12;
+  --tint: #f1f4fb1f;
+  --border: #f1f4fb17;
+  --border-60: #f1f4fb12;
+  --ios-tint: #be7e65;
+  --on-primary: #1a1220;
+  --destructive: #ff8a7a;
+  --on-sky: #f1f4fb;
+  --on-sky-muted: #aab6d3;
+  --horizon-edge: #3e5288;
+  --horizon-line: #070b18;
+  --seg-spent: #43c4b6;
+  --seg-available: #f1f4fb;
+  --seg-upcoming: #757dbb;
+  --shadow-3: none;
+  /* не переменная: заливка слоя Sky */
+  --sky: linear-gradient(to bottom, #0f1730 0%, #1a2647 55%, #2b3c69 100%);
+  /* не переменная: аватары Send again */
+  --avatar-1: rgba(43, 60, 105, 0.7);
+  --avatar-2: rgba(201, 168, 110, 0.16);
+  --avatar-3: rgba(127, 134, 201, 0.22);
+  color-scheme: dark;
+}
+
+[data-theme='day'] {
+  --background: #ecedf3;
+  --foreground: #2c2734;
+  --muted-foreground: #6c6674;
+  --card: #fbfbfd;
+  --surface-2: #f4f4f8;
+  --accent: #e4e3ee;
+  --hover: #efeef5;
+  --tint: #e4e3ee;
+  --border: #2c27341a;
+  --border-60: #2c273412;
+  --ios-tint: #b5572d;
+  --on-primary: #ffffff;
+  --destructive: #bd0005;
+  --on-sky: #1f1821;
+  --on-sky-muted: #433744;
+  --horizon-edge: #f6e7da;
+  --horizon-line: #b9bcd0;
+  --seg-spent: #0f8076;
+  --seg-available: #393463;
+  --seg-upcoming: #8b84bc;
+  /* Fluid/shadow-3 · Light */
+  --shadow-3: 0 3px 3px -1.5px #0000000f, 0 1px 1px -0.5px #0000000f, 0 0 0 1px #0000000f;
+  /* не переменная: заливка слоя Sky */
+  --sky: linear-gradient(to bottom, #e6d8cc 0%, #eebb9b 50%, #da977f 100%);
+  --avatar-1: #ecd9ce;
+  --avatar-2: #e4e3ee;
+  --avatar-3: #f1ddd3;
+  color-scheme: light;
+}
+
+/* ---------- стили текста Figma ---------- */
+
+.t-footnote   { font: 400 13px/18px Inter; }        /* HIG/Footnote 13 */
+.t-footnote-s { font: 600 13px/18px Inter; }        /* Footnote 13, Semi Bold */
+.t-caption    { font: 400 12px/16px Inter; }        /* HIG/Caption 1 12 */
+.t-sub        { font: 400 15px/20px Inter; }        /* HIG/Subheadline 15 */
+.t-sub-s      { font: 600 15px/20px Inter; }
+.t-body       { font: 400 17px/22px Inter; }        /* HIG/Body 17 */
+.t-headline   { font: 600 17px/22px Inter; }        /* HIG/Headline 17, Body 17 Semibold */
+.t-title3     { font: 400 20px/25px Inter; }        /* HIG/Title 3 20 */
+.t-title3-s   { font: 600 20px/25px Inter; }        /* HIG/Title 3 20 Semibold */
+.t-large      { font: 700 34px/41px Inter; }        /* HIG/Large Title 34 */
+.t-amount44   { font: 700 44px/52px Inter; }        /* Ufuq/Amount 44 Bold */
+.t-tab        { font: 500 10px/12px Inter; }        /* HIG/Tab bar label 10 */
+.t-tab-s      { font: 600 10px/12px Inter; }        /* HIG/Tab bar label 10 Semibold */
+.t-status     { font: 700 16px/1.4 Inter; }         /* Body/16 Bold */
+
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- витрина ---------- */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --page: #e9e9ee;
+  --page-ink: #2c2734;
+  --page-faint: #6c6674;
+  --page-line: #2c27341a;
+  --page-chip: #ffffff;
+}
+:root[data-page='night'] {
+  --page: #070a14;
+  --page-ink: #edf0f8;
+  --page-faint: #919dbc;
+  --page-line: #f1f4fb17;
+  --page-chip: #161f38;
+}
+
+html, body { background: var(--page); color: var(--page-ink); }
+body {
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 16px;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+.stage { display: flex; gap: 32px; align-items: flex-start; }
+
+.rail { display: flex; flex-direction: column; gap: 14px; width: 196px; padding-top: 4px; }
+.rail-group { display: flex; flex-direction: column; gap: 6px; }
+.rail-label { font: 400 12px/16px Inter; color: var(--page-faint); padding-left: 2px; }
+.seg {
+  display: flex; gap: 2px; padding: 2px;
+  border: 1px solid var(--page-line); border-radius: 999px; background: var(--page);
+}
+.seg button {
+  flex: 1; min-height: 44px; border-radius: 999px;
+  font: 500 13px/18px Inter; color: var(--page-faint);
+}
+.seg button[aria-pressed='true'] { background: var(--page-chip); color: var(--page-ink); font-weight: 600; }
+.states {
+  display: flex; flex-direction: column; gap: 2px; padding: 6px;
+  border: 1px solid var(--page-line); border-radius: 20px;
+}
+.states button {
+  min-height: 44px; padding: 0 12px; border-radius: 14px; text-align: left;
+  font: 500 13px/18px Inter; color: var(--page-faint);
+}
+.states button[aria-current='true'] { background: var(--page-chip); color: var(--page-ink); font-weight: 600; }
+.states button:disabled { opacity: 0.4; cursor: default; }
+
+@media (max-width: 680px) {
+  .stage { flex-direction: column; align-items: center; }
+  .rail { width: 390px; max-width: 100%; }
+}
+
+/* ---------- телефон ---------- */
+
+.phone {
+  position: relative;
+  width: 390px;
+  height: 844px;
+  flex: none;
+  border-radius: 44px;
+  overflow: hidden;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Inter;
+  -webkit-font-smoothing: antialiased;
+}
+.phone svg { display: block; flex: none; }
+
+.statusbar {
+  position: absolute; z-index: 3; top: 0; left: 0;
+  width: 390px; height: 54px;
+  padding: 8px 32px 0;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--background);
+}
+.statusbar .icons { display: flex; gap: 5px; align-items: center; }
+
+.screen {
+  position: absolute; inset: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.screen::-webkit-scrollbar { display: none; }
+.content {
+  display: flex; flex-direction: column; align-items: stretch;
+  padding: 58px 16px 120px; /* 54 статус-бар + 4 */
+}
+
+/* шапка */
+.header { display: flex; align-items: center; justify-content: space-between; height: 44px; }
+.profile { display: flex; gap: 6px; align-items: center; }
+.hit44 { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex: none; }
+.avatar36 {
+  width: 36px; height: 36px; border-radius: 18px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+}
+.date { display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap; }
+.date .muted { color: var(--muted-foreground); }
+.actions { display: flex; }
+.icon-btn { border-radius: 8px; }
+
+/* карточка баланса */
+.balance {
+  margin-top: 16px;
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.sky {
+  position: relative;
+  padding: 16px 16px 18px;
+  background: var(--sky);
+  color: var(--on-sky);
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.sky .muted { color: var(--on-sky-muted); }
+.sky .caption { white-space: pre; }
+.star { position: absolute; display: block; }
+.moon { position: absolute; right: 26px; top: 10px; width: 22px; height: 22px; }
+.moon img { position: absolute; inset: -3.64%; width: 107.28%; height: 107.28%; display: block; }
+[data-theme='day'] .star { display: none; }
+[data-theme='night'] .moon { display: none; }
+
+.amount { display: flex; gap: 6px; align-items: center; padding-top: 8px; white-space: nowrap; }
+.of-total { display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+
+.horizon .edge { height: 1px; background: var(--horizon-edge); }
+.horizon .line { height: 1px; background: var(--horizon-line); }
+
+.ground { padding: 0 16px 16px; display: flex; flex-direction: column; align-items: flex-start; }
+.bar { display: flex; gap: 3px; padding-top: 14px; flex: none; }
+.bar i { display: block; height: 8px; border-radius: 3px; flex: none; }
+.bar .s-spent { background: var(--seg-spent); }
+.bar .s-avail { background: var(--seg-available); }
+.bar .s-upcoming { background: var(--seg-upcoming); }
+.bar-labels { position: relative; width: 326px; height: 48px; white-space: nowrap; }
+.bar-labels > div { position: absolute; top: 8px; display: flex; flex-direction: column; }
+.bar-labels .l-spent { left: 0; align-items: flex-start; }
+.bar-labels .l-upcoming { right: 0; align-items: flex-end; }
+.bar-labels .muted { color: var(--muted-foreground); }
+.phrase { display: flex; gap: 5px; align-items: center; padding-top: 16px; white-space: nowrap; }
+.ground .until { color: var(--muted-foreground); white-space: nowrap; }
+
+/* главная кнопка */
+.cta {
+  margin-top: 12px;
+  height: 50px; padding: 0 16px; border-radius: 16px;
+  background: var(--ios-tint); color: var(--on-primary);
+  display: flex; align-items: center; justify-content: center;
+  white-space: nowrap;
+}
+
+.section-title { align-self: flex-start; padding: 24px 0 8px; white-space: nowrap; }
+
+/* предстоящие платежи */
+.group {
+  background: var(--card); border-radius: 20px; box-shadow: var(--shadow-3);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.group .divider { height: 1px; background: var(--border-60); flex: none; }
+.pay { display: flex; gap: 12px; align-items: center; min-height: 60px; padding: 0 16px; }
+.date-tile {
+  width: 44px; height: 44px; border-radius: 8px; flex: none;
+  background: var(--hover);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  white-space: nowrap;
+}
+.date-tile b { font-weight: 600; margin-bottom: -2px; }
+.pay-head { flex: 1 0 0; min-width: 1px; padding: 11px 0; display: flex; flex-direction: column; gap: 2px; }
+.pay-desc { display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+.pay-desc.muted { color: var(--muted-foreground); }
+.pay-sum { display: flex; gap: 3px; align-items: center; white-space: nowrap; flex: none; }
+
+/* Send again */
+.send-again {
+  background: var(--card); border-radius: 20px; box-shadow: var(--shadow-3);
+  padding: 12px 8px; display: flex; justify-content: space-between; align-items: flex-start;
+}
+.contact { flex: 1 0 0; min-width: 1px; padding: 4px 0; display: flex; flex-direction: column; gap: 6px; align-items: center; white-space: nowrap; }
+.avatar52 { width: 52px; height: 52px; border-radius: 26px; display: flex; align-items: center; justify-content: center; }
+
+/* таб-бар */
+.tabbar {
+  position: absolute; z-index: 3; left: 0; top: 761px;
+  width: 390px; height: 83px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; gap: 21px;
+}
+.tabs { display: flex; width: 100%; }
+.tab {
+  flex: 1 0 0; height: 49px;
+  display: flex; flex-direction: column; gap: 4px; align-items: center; justify-content: center;
+  color: var(--muted-foreground); white-space: nowrap;
+}
+.tab[aria-current='page'] { color: var(--foreground); }
+.home-indicator { width: 134px; height: 5px; border-radius: 3px; background: var(--foreground); flex: none; }
