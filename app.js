@@ -6,6 +6,7 @@ const SPENT = 1400;
 const UPCOMING = 1950;
 const AVAILABLE = OPENING - SPENT - UPCOMING; // 5 650
 const CHANNEL_LIMIT = 2500;     // quick transfer, за один платёж
+const MAX_DIGITS = 6;           // 999 999; седьмая цифра игнорируется (спека, «Поведение»)
 
 // Полосы: ширина под сегменты = ширина фрейма Bar минус зазоры по 3.
 // Home: Bar 326 → 320. Шторка: Bar 350 → 344.
@@ -77,7 +78,7 @@ function renderSheet() {
   $('pm-val-spent').textContent = fmt(SPENT + amount);
   $('pm-val-upc').textContent = fmt(UPCOMING);
   phone.querySelector('[data-v="limit-amount"]').textContent = `${fmt(amount)}.`;
-  $('cont').disabled = state !== '1';
+  $('cont').disabled = state !== '1' || amount === 0; // 0 → неактивна (спека, «Поведение»)
 
   const w = v => `${v}px`;
   if (state === '5') {
@@ -126,14 +127,15 @@ phone.addEventListener('click', e => {
   const key = e.target.closest('[data-key]');
   if (key && ['1', '5', '6'].includes(state)) {
     const k = key.dataset.key;
-    amount = k === 'del' ? Math.floor(amount / 10) : amount * 10 + Number(k);
+    if (k === 'del') amount = Math.floor(amount / 10);
+    else if (String(amount).length < MAX_DIGITS || amount === 0) amount = amount * 10 + Number(k); // ведущий 0 даёт 0
     go(stateForAmount(amount));
     return;
   }
   const k = e.target.closest('[data-k]')?.dataset.k;
   if (k === 'cta') { amount = FRAME_AMOUNT[1]; go('1'); }
   else if (k === 'sh-close') go('home');
-  else if (k === 'cont' && state === '1') go('2');
+  else if (k === 'cont' && state === '1' && amount > 0) go('2');
   else if (k === 'back') go('1');
   // confirm → 3 и add recipient — см. спеку: 3 собирается в s3, экрана Add recipient нет
 });

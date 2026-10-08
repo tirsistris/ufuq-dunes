@@ -24,6 +24,10 @@ const SPOILS = {
   limit: ['app.js', 'if (a > CHANNEL_LIMIT)', 'if (a >= CHANNEL_LIMIT)'],
   // клавиша 40 вместо 48 — зоны нажатия обязаны покраснеть
   keytap: ['styles.css', '  height: 48px; border-radius: 12px; background: var(--tint);', '  height: 40px; border-radius: 12px; background: var(--tint);'],
+  // сумма 0 снова даёт активный Continue — логика обязана покраснеть
+  zero: ['app.js', "state !== '1' || amount === 0;", "state !== '1';"],
+  // лимит 6 цифр снят — логика обязана покраснеть
+  maxlen: ['app.js', 'const MAX_DIGITS = 6;', 'const MAX_DIGITS = 99;'],
   // дневной destructive на ступень — цвета шторки обязаны покраснеть
   destr: ['styles.css', '--destructive: #bd0005;', '--destructive: #bd0006;'],
   // tabular-nums на телефоне (в Figma цифры пропорциональные) — геометрия обязана покраснеть
