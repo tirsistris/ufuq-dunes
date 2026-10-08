@@ -18,6 +18,14 @@ const SPOILS = {
   token: ['styles.css', '--foreground: #edf0f8;', '--foreground: #edf0f9;'],
   // зона нажатия иконки 40 вместо 44
   tap: ['styles.css', '.hit44 { width: 44px; height: 44px;', '.hit44 { width: 40px; height: 40px;'],
+  // шторка: верхний отступ земли 14 → 17 — геометрия шторки обязана покраснеть
+  sheetpad: ['styles.css', '  padding: 14px 20px 34px; background: var(--card);', '  padding: 17px 20px 34px; background: var(--card);'],
+  // лимит канала «больше» → «больше или равно» — логика обязана покраснеть на ровно 2 500
+  limit: ['app.js', 'if (a > CHANNEL_LIMIT)', 'if (a >= CHANNEL_LIMIT)'],
+  // клавиша 40 вместо 48 — зоны нажатия обязаны покраснеть
+  keytap: ['styles.css', '  height: 48px; border-radius: 12px; background: var(--tint);', '  height: 40px; border-radius: 12px; background: var(--tint);'],
+  // дневной destructive на ступень — цвета шторки обязаны покраснеть
+  destr: ['styles.css', '--destructive: #bd0005;', '--destructive: #bd0006;'],
   // tabular-nums на телефоне (в Figma цифры пропорциональные) — геометрия обязана покраснеть
   tnum: ['styles.css', '/* ---------- витрина ---------- */', '#phone * { font-variant-numeric: tabular-nums; }\n/* ---------- витрина ---------- */'],
 };
@@ -45,19 +53,23 @@ export async function serve() {
   return { url: `http://127.0.0.1:${server.address().port}/`, close: () => server.close() };
 }
 
-// theme: 'night' | 'day'
-export async function openHome(theme) {
+// theme: 'night' | 'day'; state: 'home' | '1'..'6'
+export async function openHome(theme) { return openState(theme, 'home'); }
+
+export async function openState(theme, state) {
   const srv = await serve();
   const browser = await chromium.launch();
   const page = await browser.newPage({
     viewport: { width: 900, height: 920 }, deviceScaleFactor: 1,
     colorScheme: theme === 'night' ? 'dark' : 'light',
   });
-  await page.goto(`${srv.url}?theme=${theme === 'night' ? 'dark' : 'light'}&state=home`);
+  await page.goto(`${srv.url}?theme=${theme === 'night' ? 'dark' : 'light'}&state=${state}`);
   await page.evaluate(() => document.fonts.ready);
   await page.waitForFunction(() => [...document.images].every(i => i.complete));
   const t = await page.$eval('#phone', el => el.dataset.theme);
   if (t !== theme) throw new Error(`тема ${t}, ждали ${theme}`);
+  const st = await page.$eval('#phone', el => el.dataset.state);
+  if (st !== state) throw new Error(`состояние ${st}, ждали ${state}`);
   return { page, close: async () => { await browser.close(); srv.close(); } };
 }
 

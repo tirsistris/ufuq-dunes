@@ -41,6 +41,9 @@
   --avatar-1: rgba(43, 60, 105, 0.7);
   --avatar-2: rgba(201, 168, 110, 0.16);
   --avatar-3: rgba(127, 134, 201, 0.22);
+  /* не переменная: заливка Sky шторки и scrim */
+  --sheet-sky: linear-gradient(to bottom, #0f1730 0%, #1a2647 55%, #2b3c69 100%);
+  --scrim: rgba(6, 9, 20, 0.55);
   color-scheme: dark;
 }
 
@@ -72,6 +75,9 @@
   --avatar-1: #ecd9ce;
   --avatar-2: #e4e3ee;
   --avatar-3: #f1ddd3;
+  /* не переменная: заливка Sky шторки (55%, а не 50% как на Home) и scrim */
+  --sheet-sky: linear-gradient(to bottom, #e6d8cc 0%, #eebb9b 55%, #da977f 100%);
+  --scrim: rgba(42, 36, 51, 0.32);
   color-scheme: light;
 }
 
@@ -302,3 +308,78 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .tab[aria-current='page'] { color: var(--foreground); }
 .home-indicator { width: 134px; height: 5px; border-radius: 3px; background: var(--foreground); flex: none; }
+
+/* ---------- шторка перевода (1, 2, 5, 6) ---------- */
+
+[hidden] { display: none !important; }
+
+.scrim { position: absolute; inset: 0; z-index: 4; background: var(--scrim); }
+.sheet {
+  position: absolute; z-index: 5; left: 0; bottom: 0; width: 390px;
+  border-radius: 28px 28px 0 0; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.sh-sky {
+  padding: 8px 20px 20px;
+  background: var(--sheet-sky); color: var(--on-sky);
+  display: flex; flex-direction: column; gap: 14px; align-items: stretch;
+}
+.sh-sky .muted { color: var(--on-sky-muted); }
+.grabber-row { display: flex; justify-content: center; }
+.grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--on-sky-muted); opacity: 0.5; }
+.title-row { display: flex; align-items: center; justify-content: space-between; white-space: nowrap; }
+.close44 { width: 44px; height: 44px; display: flex; align-items: center; justify-content: flex-end; flex: none; }
+.close30 {
+  width: 30px; height: 30px; border-radius: 15px; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+}
+.recipient { display: flex; gap: 12px; align-items: center; align-self: flex-start; white-space: nowrap; }
+.avatar40 {
+  width: 40px; height: 40px; border-radius: 20px; background: var(--accent);
+  display: flex; align-items: center; justify-content: center; flex: none;
+}
+.who { display: flex; flex-direction: column; align-items: flex-start; }
+.amt-block { display: flex; flex-direction: column; gap: 2px; align-items: center; }
+.amt-row { display: flex; gap: 8px; align-items: center; white-space: nowrap; }
+.avail-line { display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+
+.sh-hz { display: flex; flex-direction: column; flex: none; }
+.sh-hz .edge { height: 1px; background: var(--horizon-edge); }
+.sh-hz .line { height: 1px; background: var(--horizon-line); }
+
+.sh-ground {
+  padding: 14px 20px 34px; background: var(--card);
+  display: flex; flex-direction: column; gap: 14px; align-items: stretch;
+}
+.sh-ground > .t-footnote { align-self: flex-start; white-space: nowrap; }
+.sh-ground .muted { color: var(--muted-foreground); }
+.pm-block { display: flex; flex-direction: column; gap: 8px; }
+.pm-bar { display: flex; gap: 3px; }
+.pm-bar i { display: block; height: 8px; border-radius: 3px; flex: none; }
+.pm-bar .s-spent { background: var(--seg-spent); }
+.pm-bar .s-avail { background: var(--seg-available); }
+.pm-bar .s-short { background: var(--destructive); }
+.pm-bar .s-upcoming { background: var(--seg-upcoming); }
+.pm-labels { display: flex; justify-content: space-between; align-items: flex-start; white-space: nowrap; }
+.pm-labels > div { display: flex; flex-direction: column; }
+.pm-labels .l-spent { align-items: flex-start; }
+.pm-labels .l-upcoming { align-items: flex-end; }
+
+.err-line { display: flex; gap: 6px; align-items: center; color: var(--destructive); white-space: nowrap; }
+.limit { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+.lim-line { display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+
+.keypad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.key {
+  height: 48px; border-radius: 12px; background: var(--tint); color: var(--foreground);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.btn-primary, .btn-secondary {
+  height: 50px; padding: 0 16px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center; white-space: nowrap;
+}
+.btn-primary { background: var(--ios-tint); color: var(--on-primary); }
+.btn-primary:disabled { background: var(--tint); color: var(--muted-foreground); cursor: default; }
+.btn-secondary { height: 48px; background: var(--tint); color: var(--foreground); }
+.btn-back { height: 44px; display: flex; align-items: center; justify-content: center; color: var(--foreground); }

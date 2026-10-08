@@ -21,7 +21,7 @@
 ## Репо и стек
 - Новая папка: `C:\Users\ADMIN\Desktop\rove bank\ufuq-dunes`, `git init`, новый проект Vercel `ufuq-dunes`.
 - Статичный сайт: один `index.html` + `styles.css` + `app.js`, без фреймворков (как v1).
-- Шрифт: **Inter** (variable, self-host в `/fonts`), как в Figma. Стили текста — из Figma (HIG/*, Ufuq/Amount 44): кегль, интерлиньяж, начертание один в один. `font-variant-numeric: tabular-nums` для сумм.
+- Шрифт: **Inter** (variable, self-host в `/fonts`), как в Figma. Стили текста — из Figma (HIG/*, Ufuq/Amount 44): кегль, интерлиньяж, начертание один в один.
 - Иконки: SVG из пака Миши Наера (round line, активный таб — round solid), брать те же, что в Figma: magnifying-glass, bell, x, backspace, exclamation-triangle, clock, calendar/arrows-left-right/person (line + solid). Источник: https://mishanaer-icons.vercel.app/icons/round/{line|solid}/{name}.svg
 - Знак риала: официальный SAMA (U+20C1) как SVG — тот же контур, что в компоненте Figma «Riyal sign (SAMA)».
 - Дюны экранов 3–4: экспортировать слой «Scene · vector» из фреймов 3/4 как SVG (обе темы), вставить как есть. Размытия Figma → CSS `filter: blur()`; матовая карточка → `backdrop-filter: blur(24px)`.
@@ -58,9 +58,10 @@
 ## Расхождения Figma (записаны, не исправлены молча)
 - Цвета без переменных: заливка Sky (Night #0f1730→#1a2647 55%→#2b3c69; Day #e6d8cc→#eebb9b 50%→#da977f), луна #F7EEE6 72% (blur 0.4), звёзды #EDF2FF 45–65%, аватары Send again (Night rgba 43,60,105,.7 / 201,168,110,.16 / 127,134,201,.22; Day #ecd9ce / #e4e3ee / #f1ddd3). В CSS — помечены «не переменная».
 - Экспорт иконок отдаёт цвет мастер-компонента (#171717/#737373), а не оверрайд инстанса. Переменные на инстансах проверены (on-sky, on-sky-muted, foreground, muted-foreground) — иконки красятся через currentColor.
-- Фрейм Bar шире полезной ширины Ground на 2 px (328 против 326): сегмент Upcoming кончается в 14 px от края, а не в 16. Перенесено как есть.
+- Bar 328 против 326 исправлен в Figma (2026-10-09): бары во всех 10 фреймах с баром пересчитаны пропорционально, теперь 326 (50+3+201+3+69). Код следует.
 - Шрифт в Figma — Inter 3.19 (14 из 14 ширин совпали), не Inter 4.x (у v4 «5 650» уже на 3 px).
-- КОНФЛИКТ: спека требует tabular-nums для сумм, а в Figma цифры пропорциональные. С tnum 4 элемента Home шире на 2.6–3.8 px (красное на листе); без tnum (SPOIL=notnum) геометрия 47/47 и 48/48.
+- РЕШЕНО (2026-10-09): Figma главнее спеки. tabular-nums убран везде — в Figma цифры пропорциональные. Страж: SPOIL=tnum возвращает tnum → home-geometry краснеет (14).
+- Правило: сначала меняем Figma, потом код. Код не вводит правил, которых нет в Figma.
 
 ## Статус
 Обновлено: 2026-10-09
