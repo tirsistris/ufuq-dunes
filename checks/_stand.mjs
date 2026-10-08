@@ -42,6 +42,12 @@ const SPOILS = {
   scenefade: ['app.js', 'if (el.dataset.k && before.has(el.dataset.k)) continue;', ''],
   // дневной destructive на ступень — цвета шторки обязаны покраснеть
   destr: ['styles.css', '--destructive: #bd0005;', '--destructive: #bd0006;'],
+  // шторка при открытии только проявляется, а не выезжает — поток обязан покраснеть
+  sheetslide: ['app.js', "else sh.animate([{ transform: down(sh) }, { transform: 'none' }], opt);", "else sh.animate([{ opacity: 0 }, { opacity: 1 }], opt);"],
+  // крестик снова мгновенный — шторка пропадает сразу
+  closenow: ['app.js', "go('home', SHEET_OUT(240))", "go('home')"],
+  // Done снова без Dissolve
+  donenow: ['app.js', "go('home', DISSOLVE(240))", "go('home')"],
   // tabular-nums на телефоне (в Figma цифры пропорциональные) — геометрия обязана покраснеть
   tnum: ['styles.css', '/* ---------- витрина ---------- */', '#phone * { font-variant-numeric: tabular-nums; }\n/* ---------- витрина ---------- */'],
 };

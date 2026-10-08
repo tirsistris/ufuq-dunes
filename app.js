@@ -18,9 +18,12 @@ const BAR_IMPACT_PX = 320;      // 3, 4: Bar 326 → 320
 // Сумма, с которой открываются состояния (как во фреймах Figma).
 const FRAME_AMOUNT = { 1: 1500, 2: 1500, 3: 1500, 4: 1500, 5: 6000, 6: 3000 };
 
-// Переходы — из прототипа Figma (reactions фреймов Page 2). Где связи в Figma нет — без анимации.
+// Переходы — из прототипа Figma (reactions фреймов Page 2).
+// Шторка с Home и обратно — решение Баатра (в Figma Dissolve, спека «Расхождения»).
 const SMART = ms => ['smart', ms];
 const DISSOLVE = ms => ['dissolve', ms];
+const SHEET_IN = ms => ['sheet-in', ms];
+const SHEET_OUT = ms => ['sheet-out', ms];
 const CALC_MS = 1500;           // 3 → 4: After delay 1,5 s
 
 const BUILT = new Set(['home', '1', '2', '3', '4', '5', '6']);
@@ -153,6 +156,8 @@ function applyState() {
 // (scaleX от левого края — без перекладки соседей);
 // исчезающие (data-show) гаснут на снимке, появляющиеся проявляются.
 // Тот же data-k на другом элементе (дюны 3 → 4) — старый гаснет поверх нового.
+// Шторка: открытие — шторка выезжает снизу, затемнение проявляется;
+// закрытие — снимок шторки уезжает вниз, затемнение гаснет, Home под ними уже живой.
 // prefers-reduced-motion: только прозрачность.
 
 function visibleKeyed() {
@@ -174,6 +179,7 @@ function go(next, motion) {
   if (!motion) { state = next; applyState(); return; }
   const [kind, ms] = motion;
   const opt = { duration: ms, easing: 'ease-out' };
+  if (kind === 'sheet-in' || kind === 'sheet-out') { moveSheet(kind, next, opt); return; }
 
   const ghost = phone.cloneNode(true);
   const pr = phone.getBoundingClientRect();
@@ -239,6 +245,40 @@ function go(next, motion) {
   }
 }
 
+function moveSheet(kind, next, opt) {
+  const down = sh => `translateY(${sh.getBoundingClientRect().height}px)`; // bottom: 0 → целиком за нижним краем
+  if (kind === 'sheet-in') {
+    state = next;
+    applyState();
+    const sh = phone.querySelector(':scope > .sheet');
+    phone.querySelector(':scope > .scrim').animate([{ opacity: 0 }, { opacity: 1 }], opt);
+    if (reduced.matches) sh.animate([{ opacity: 0 }, { opacity: 1 }], opt);
+    else sh.animate([{ transform: down(sh) }, { transform: 'none' }], opt);
+    return;
+  }
+  const ghost = phone.cloneNode(true);
+  state = next;
+  applyState();
+  ghost.removeAttribute('id');
+  ghost.classList.add('ghost');
+  ghost.inert = true;
+  ghost.setAttribute('aria-hidden', 'true');
+  ghost.style.visibility = 'hidden';
+  const sh = ghost.querySelector(':scope > .sheet'), sc = ghost.querySelector(':scope > .scrim');
+  sh.style.visibility = sc.style.visibility = 'visible';
+  for (const el of ghost.querySelectorAll('[id],[data-k],[data-key]')) {
+    el.removeAttribute('id'); el.removeAttribute('data-k'); el.removeAttribute('data-key');
+  }
+  phone.append(ghost);
+  const done = [
+    sc.animate([{ opacity: 1 }, { opacity: 0 }], opt).finished,
+    reduced.matches
+      ? sh.animate([{ opacity: 1 }, { opacity: 0 }], opt).finished
+      : sh.animate([{ transform: 'none' }, { transform: down(sh) }], opt).finished,
+  ];
+  Promise.all(done).then(() => ghost.remove(), () => {});
+}
+
 function layoutBar() {
   const [sp, av, upc] = segWidths([SPENT, AVAILABLE, UPCOMING], BAR_HOME_PX);
   const bar = document.getElementById('bar');
@@ -259,12 +299,12 @@ phone.addEventListener('click', e => {
     return;
   }
   const k = e.target.closest('[data-k]')?.dataset.k;
-  if (k === 'cta') { amount = FRAME_AMOUNT[1]; go('1'); }
-  else if (k === 'sh-close') go('home');
+  if (k === 'cta') { amount = FRAME_AMOUNT[1]; go('1', SHEET_IN(240)); }
+  else if (k === 'sh-close') go('home', SHEET_OUT(240));
   else if (k === 'cont' && state === '1' && amount > 0) go('2', SMART(240));
   else if (k === 'back') go('1', SMART(240));
   else if (k === 'confirm') go('3', DISSOLVE(240));
-  else if (k === 'done') go('home');
+  else if (k === 'done') go('home', DISSOLVE(240));
   // add recipient — экрана нет (вне объёма v2)
 });
 
