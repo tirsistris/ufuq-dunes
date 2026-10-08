@@ -83,17 +83,17 @@
 ## Статус
 Обновлено: 2026-10-09
 Сделано:
-- s1 — 6ba3c67; s1-fix 61df57d: tnum убран (Figma главнее), полоса 326 по Figma, эталоны Home перекачаны. home-geometry 47/47 + 48/48, home-colors 35/35 + 35/35. Порча SPOIL=tnum → 14 красных.
-- s2 — c3fb7cf: шторка 1, 2, 5, 6, клавиатура, логика суммы. sheet-geometry, sheet-colors, amount-logic, tap-targets — зелёные. Лист: compare-board-1-2-5-6.png, геометрия >2px: 0.
-- s2-behavior — b4bae01: сумма 0 → Continue неактивна, ведущий 0 игнорируется, максимум 6 цифр; правило в CLAUDE.md. amount-logic 21/21; порчи zero (2 красных), maxlen (3).
-- s3 — f8b404d: экраны 3, 4 (дюны «Scene · vector» как есть, матовая карточка), переходы по прототипу Figma. impact-geometry 7/7 + 17/17 в обеих темах, impact-colors зелёное, flow 28/28, tap-targets с 3 и 4 — всё ≥ 44. Порчи calcpos, blur, dissolve, timer, flipnow, scenefade — каждая краснеет в своём правиле. Лист: compare-board-3-4.png, геометрия >2px: 0 во всех 4; кадры середины переходов: transitions-mid-night.png / -day.png.
-Следующий шаг: s4 — полный лист сверки 14 состояний (compare-board.mjs home 1 2 3 4 5 6), контраст по токенам (эталоны в «Приёмке»), зоны, deploy-dunes.txt. Начать с решения по открытым вопросам.
+- s1 — 6ba3c67, s1-fix 61df57d; s2 — c3fb7cf, s2-behavior b4bae01; s3 — f8b404d (подробности — в истории git, стражи зелёные на fb6a619).
+- s4-П1 — spec cf8be46, страж f84cf3e (flow), код 42f9a10: шторка выезжает/уезжает 240 ease-out с затемнением, Done → Dissolve 240. flow 40/40; на старом коде 10 красных; порчи sheetslide (1), closenow (6), donenow (2).
+- s4-П2 — fb6a619: лист compare-board-home-1-2-3-4-5-6.png, 14 состояний, геометрия >2px: 0 во всех; средняя разница 1,9–3,1/255. Кадры шторки: transitions-sheet-night/day.png (открытие 60/120 мс, закрытие 60/120 мс).
+- s4-П3 — contrast 18/18, все 6 эталонов Figma совпали до 0,01 (число 9.77/7.20 … ошибка 7.12/6.42); порча upc краснеет. tap-targets: все кнопки 14 состояний ≥ 44.
+- s4-П4 — deploy-dunes.txt в ufuq-case-review: sha index 35a2564d, app.js 0a08e090, styles.css 78f7faa3; не запускался.
+Следующий шаг: визуальная приёмка Баатром (лист 14 состояний, кадры шторки, живой прогон Home→1→2→3→4→Home и крестик с 1/5/6), затем деплой по deploy-dunes.txt (а → б).
 Открытые вопросы:
-- Переходы Home→1 (Transfer by phone number), крестик→Home (1, 5, 6), Done→Home: связей в Figma нет, сейчас мгновенно. Нужна связь в Figma (тип, длительность) — или так и оставить?
-- Smart animate 1↔2, 1↔5/6: исчезающие слои (клавиатура, строка ошибки) гаснут на старом месте, а не едут со шторкой. Проверить глазами по transitions-mid-*.png, при сомнении — сравнить с Present в Figma.
+- Закрытие шторки идёт ease-out (как всё в спеке): движение в начале быстрое, к низу замедляется. «Обратно» буквально было бы ease-in. Решить глазами по transitions-sheet-*.png.
 Нельзя забыть:
-- Playwright берётся из npx-кэша v1 (путь в checks/_stand.mjs); отдельной установки нет. Состояние 3 в стражах держится page.clock (пауза до загрузки), иначе через 1,5 с уходит в 4.
-- Эталоны Figma в ref/ (home-*, s1–s6-*); ассеты Figma живут 7 дней.
-- `el.hidden` не работает на <svg> — видимость через toggleAttribute('hidden') (app.js); в снимке перехода — hasAttribute('hidden').
-- Шорткат `font:` в .t-* сбрасывает font-variant-numeric — правило на предке не доходит до текста.
-- FLIP: новые координаты снимать до запуска любой анимации (порча flipnow); сегменты полос — transform scaleX, не width (иначе соседи прыгают).
+- Playwright берётся из npx-кэша v1 (путь в checks/_stand.mjs). Под page.clock setTimeout внутри страницы не срабатывает — await такого промиса вешает страж.
+- Эталоны Figma в ref/ (home-*, s1–s6-*). Стражи геометрии пишут runs/*.json — прогнать их перед compare-board.
+- `el.hidden` не работает на <svg> — видимость через toggleAttribute('hidden').
+- FLIP: новые координаты снимать до запуска любой анимации (порча flipnow); сегменты полос — scaleX, не width.
+- sha в deploy-dunes.txt — по файлам на диске (CRLF); любая правка index/app/styles → пересчитать.
