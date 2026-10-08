@@ -84,15 +84,15 @@
 Обновлено: 2026-10-09
 Сделано:
 - s1 — 6ba3c67, s1-fix 61df57d; s2 — c3fb7cf, s2-behavior b4bae01; s3 — f8b404d (подробности — в истории git).
-- s4-П1 — spec cf8be46, страж f84cf3e, код 42f9a10: шторка выезжает 240 ease-out с затемнением, Done → Dissolve 240.
-- s4-П2 — fb6a619: лист 14 состояний, геометрия >2px: 0. s4-П3 — 47eaf2c: contrast 18/18, tap-targets зелёные.
-- s4-П4 — deploy-dunes.txt в ufuq-case-review (sha app.js там СТАРЫЙ 0a08e090 — см. «Нельзя забыть»).
-- s4-П5 — spec 00df931, страж e750f59 (красный на старом коде 6 из 40), код 18d3c4c, кадры 06e28a7: крестик → Home 160 ease-in, затемнение гаснет за 160. flow 40/40; порчи closeease (6), closenow (6), sheetslide (1), donenow (2). Остальные 9 стражей зелёные.
-Следующий шаг: Баатр смотрит transitions-sheet-night/day.png (открытие 60/120/180, закрытие 40/80/120) и живой крестик с 1/5/6. После «да» — пересчитать sha в deploy-dunes.txt (app.js a4b3c3d9), затем деплой (а → б).
-Открытые вопросы: (пусто — ease закрытия решён 2026-10-09: ease-in 160)
+- s4-П1 — spec cf8be46, страж f84cf3e, код 42f9a10. s4-П2 — fb6a619 (лист 14 состояний, >2px: 0). s4-П3 — 47eaf2c (contrast, tap-targets).
+- s4-П5 — spec 00df931, страж e750f59, код 18d3c4c, кадры 06e28a7: крестик → Home 160 ease-in.
+- Приёмка глазами пройдена (Баатр, 2026-10-09).
+- s4-П4 — deploy-dunes.txt обновлён под HEAD 0e6802d: index 35a2564d, app.js a4b3c3d9, styles 78f7faa3 (сверено sha256sum с диском; проверки sha из строки (а) проходят на чистом дереве). Файл вне репо — коммита нет.
+- Финальный прогон одним запуском на HEAD 0e6802d: 10/10 стражей зелёные — home-geometry, home-colors, sheet-geometry, sheet-colors, impact-geometry, impact-colors, amount-logic 21/21, flow 40/40, contrast 18/18, tap-targets. Дерево после прогона чистое.
+Следующий шаг: деплой — запускает только Баатр: deploy-dunes.txt, а → б.
+Открытые вопросы: (пусто)
 Нельзя забыть:
 - Playwright из npx-кэша v1 (путь в checks/_stand.mjs). Под page.clock setTimeout внутри страницы не срабатывает — await такого промиса вешает страж.
 - Эталоны Figma в ref/. Стражи геометрии пишут runs/*.json — прогнать их перед compare-board.
-- `el.hidden` не работает на <svg> — toggleAttribute('hidden'). FLIP: новые координаты снимать до запуска анимации (flipnow); сегменты — scaleX.
-- deploy-dunes.txt: sha по файлам на диске (CRLF). После П5 app.js = a4b3c3d9 (index 35a2564d, styles 78f7faa3 без изменений) — в файле ещё 0a08e090.
-- Кадры шторки зеркальны (y 592/387/239 ↔ 239/387/592): CSS ease-in и ease-out — точное отражение, кадры 1/4 и 3/4 времени это показывают. Не баг.
+- deploy-dunes.txt: sha по файлам на диске (CRLF). Любая правка index/app/styles после 0e6802d — пересчитать sha в строках 4, 7, 9.
+- Кадры шторки зеркальны (y 592/387/239 ↔ 239/387/592): CSS ease-in и ease-out — точное отражение. Не баг.
