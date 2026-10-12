@@ -1,6 +1,7 @@
 // a5 — фон витрины вокруг телефона (решение Баатра, в Figma витрины нет):
 // светлая #CFD1DB, тёмная #1B2236; смена темы — background-color за 240 мс ease-out (html, body, .seg);
 // при загрузке перехода нет (фон сразу нужный); prefers-reduced-motion — без перехода.
+// Контраст панели витрины (подписи, невыбранные и выбранные кнопки) к их фону — текст ≥ 4,5 в обеих темах.
 import { serve, line } from './_stand.mjs';
 import { chromium } from 'file:///C:/Users/ADMIN/AppData/Local/npm-cache/_npx/705bc6b22212b352/node_modules/playwright/index.mjs';
 
@@ -39,6 +40,32 @@ for (const reduced of [false, true]) {
     }
     await page.close();
   }
+}
+// контраст панели: цвет текста к первому непрозрачному фону вверх по дереву (живые стили)
+for (const theme of ['light', 'dark']) {
+  const page = await browser.newPage({ viewport: { width: 900, height: 920 }, reducedMotion: 'reduce' });
+  await page.goto(`${srv.url}?theme=${theme}&state=home`);
+  const rows = await page.evaluate(() => {
+    const rgb = s => s.match(/[\d.]+/g).map(Number);
+    const lin = v => (v /= 255) <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    const L = c => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]);
+    const bgOf = el => { for (let x = el; x; x = x.parentElement) { const c = rgb(getComputedStyle(x).backgroundColor); if (c.length < 4 || c[3] > 0) return c; } return [255, 255, 255]; };
+    const pick = [
+      ['подпись (Theme)', '.rail-label'],
+      ['невыбранная кнопка Theme', '#theme-seg button[aria-pressed="false"]'],
+      ['выбранная кнопка Theme', '#theme-seg button[aria-pressed="true"]'],
+      ['невыбранная кнопка States', '#states button[aria-current="false"]'],
+      ['выбранная кнопка States', '#states button[aria-current="true"]'],
+    ];
+    return pick.map(([name, sel]) => {
+      const el = document.querySelector(sel);
+      const fg = rgb(getComputedStyle(el).color), bg = bgOf(el);
+      const a = L(fg), b = L(bg);
+      return { name, cr: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05), fg: getComputedStyle(el).color, bg: `rgb(${bg.slice(0, 3).join(', ')})` };
+    });
+  });
+  for (const r of rows) check(`контраст ${theme}: ${r.name} ${r.cr.toFixed(2)}:1 (порог 4,5)`, r.cr >= 4.5, `${r.fg} на ${r.bg}`);
+  await page.close();
 }
 await browser.close(); srv.close();
 line(red ? `ИТОГ: КРАСНОЕ (${red} из ${n})` : `ИТОГ: зелёное (${n}/${n})`);

@@ -72,6 +72,8 @@ const SPOILS = {
   pageease: ['styles.css', 'transition: background-color 240ms ease-out; }', 'transition: background-color 240ms linear; }'],
   // a5: тёмный фон витрины прежний (#070A14) — page-bg обязан покраснеть
   pagecolor: ['styles.css', '--page: #1b2236;', '--page: #070a14;'],
+  // a5: подписи панели светлой темы прежнего цвета (#6C6674, 3,64:1) — контраст page-bg обязан покраснеть
+  panelfaint: ['styles.css', '--page-faint: #534e5c;', '--page-faint: #6c6674;'],
   // AR: восточно-арабские цифры не подставляются — логика суммы AR обязана покраснеть
   ardigits: ['app.js', "  if (lang !== 'ar') return String(n)", "  if (true) return String(n)"],
 };

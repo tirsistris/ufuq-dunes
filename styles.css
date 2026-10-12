@@ -154,7 +154,7 @@
 :root {
   --page: #cfd1db; /* a5: фон витрины — решение Баатра, в Figma витрины нет */
   --page-ink: #2c2734;
-  --page-faint: #6c6674;
+  --page-faint: #534e5c; /* a5: 5,28:1 к #CFD1DB (было #6C6674 — 3,64:1) */
   --page-line: #2c27341a;
   --page-chip: #ffffff;
 }
@@ -163,7 +163,7 @@
   --page-ink: #edf0f8;
   --page-faint: #919dbc;
   --page-line: #f1f4fb17;
-  --page-chip: #161f38;
+  --page-chip: #313b5c; /* a5: выбранный сегмент 1,44:1 к #1B2236, текст на нём 9,64:1 */
 }
 
 html, body { background: var(--page); color: var(--page-ink); }
