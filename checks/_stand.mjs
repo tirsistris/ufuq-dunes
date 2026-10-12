@@ -60,6 +60,12 @@ const SPOILS = {
   arupc: ['styles.css', '/* ---------- витрина ---------- */', ".phone[lang='ar'] .bar-labels .l-upcoming { inset-inline-end: 44px; }\n/* ---------- витрина ---------- */"],
   // AR: иконки статус-бара зеркалятся вместе с телефоном — геометрия AR обязана покраснеть
   ardir: ['styles.css', 'align-items: center; direction: ltr; }', 'align-items: center; }'],
+  // AR: клавиатура зеркалится вместе с телефоном (3-2-1) — геометрия шторки AR обязана покраснеть
+  arkeys: ['styles.css', ".phone[lang='ar'] .keypad { direction: ltr; }", ''],
+  // AR: ⌫ не отражён — геометрия шторки AR (проверка transform) обязана покраснеть
+  ardel: ['styles.css', ".phone[lang='ar'] [data-key='del'] svg { transform: scaleX(-1); }", ''],
+  // AR: восточно-арабские цифры не подставляются — логика суммы AR обязана покраснеть
+  ardigits: ['app.js', "  if (lang !== 'ar') return String(n)", "  if (true) return String(n)"],
 };
 export const SPOIL = process.env.SPOIL || '';
 if (SPOIL && !SPOILS[SPOIL]) throw new Error(`нет порчи ${SPOIL}`);

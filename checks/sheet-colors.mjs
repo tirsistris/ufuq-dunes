@@ -1,4 +1,4 @@
-// Цвета шторки (1, 2, 5, 6) против переменных Figma (ref/tokens.figma.json), обе темы.
+// Цвета шторки (1, 2, 5, 6) против переменных Figma (ref/tokens.figma.json), обе темы, EN и AR.
 // Вычисленный стиль против значения переменной; любое отличие канала — красное.
 // Небо шторки и scrim — не переменные (см. «Расхождения» в спеке), здесь не сверяются.
 import fs from 'node:fs';
@@ -59,9 +59,10 @@ function cssToRgba(s) {
 }
 
 let red = 0;
-for (const theme of ['night', 'day']) {
+for (const lang of ['en', 'ar']) for (const theme of ['night', 'day']) {
+  const tag = lang === 'ar' ? 'AR ' : '';
   for (const state of ['1', '2', '5', '6']) {
-    const { page, close } = await openState(theme, state);
+    const { page, close } = await openState(theme, state, { lang });
     const rows = MAP.filter(r => r[0].includes(state));
     let ok = 0;
     for (const [, sel, prop, token] of rows) {
@@ -70,9 +71,9 @@ for (const theme of ['night', 'day']) {
       const got = cssToRgba(css);
       const same = got.slice(0, 3).every((v, i) => v === want[i]) && Math.abs(got[3] - want[3]) < 0.004;
       if (same) ok++;
-      else { red++; line(`КРАСНОЕ ${theme} ${state} ${sel} ${prop}: ${token} = ${TOK[theme][token]}, в приложении ${css}`); }
+      else { red++; line(`КРАСНОЕ ${tag}${theme} ${state} ${sel} ${prop}: ${token} = ${TOK[theme][token]}, в приложении ${css}`); }
     }
-    line(`${theme} ${state}: ${ok}/${rows.length} цветов = переменные Figma`);
+    line(`${tag}${theme} ${state}: ${ok}/${rows.length} цветов = переменные Figma`);
     await close();
   }
 }

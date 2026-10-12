@@ -116,6 +116,14 @@
    9:41 — Inter (Body/16 Bold), как во фрейме. Зеркалирование — dir="rtl" на #phone. */
 .phone[lang='ar'] :is(.t-footnote, .t-footnote-s, .t-caption, .t-sub, .t-sub-s, .t-body, .t-headline,
   .t-title3, .t-title3-s, .t-large, .t-amount44, .t-tab, .t-tab-s) { font-family: 'Readex Pro'; }
+/* латиница во фреймах AR — Inter: «+966 5X XXX XXXX» (HIG/Subheadline 15) и стрелка «←» в 2 */
+.phone[lang='ar'] [class*='t-'].latin { font-family: Inter; }
+/* шторка AR: клавиатура не зеркалится (1-2-3 слева направо), ⌫ отражён по горизонтали — как во фреймах */
+.phone[lang='ar'] .keypad { direction: ltr; }
+.phone[lang='ar'] [data-key='del'] svg { transform: scaleX(-1); }
+/* 1 · Night · AR (119:4422): сумма набрана AR/44 · Regular, во всех остальных шторках AR и в 1 · Day — Bold.
+   Похоже на ошибку во фрейме; повторяем кадр, вопрос к Figma — в отчёте a2. */
+.phone[lang='ar'][data-theme='night'][data-state='1'] [data-k='amt'] { font-weight: 400; }
 
 
 /* ---------- витрина ---------- */

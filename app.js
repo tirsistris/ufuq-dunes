@@ -30,7 +30,7 @@ const CALC_MS = 1500;           // 3 → 4: After delay 1,5 s
 
 const BUILT = new Set(['home', '1', '2', '3', '4', '5', '6']);
 // AR собирается по шагам спеки ufuq-dunes-ar.md: a1 — Home, a2 — шторка, a3 — 3 и 4.
-const BUILT_AR = new Set(['home']);
+const BUILT_AR = new Set(['home', '1', '2', '5', '6']);
 const built = s => (lang === 'ar' ? BUILT_AR : BUILT).has(s);
 
 // Тексты AR — дословно из фреймов Figma Page 2 «· AR» (Home: 119:4082 / 122:3172).
@@ -50,6 +50,18 @@ const AR = {
   'title-send': 'إرسال سريع',
   'ini-a': 'ع', 'name-a': 'عبدالله', 'ini-n': 'ن', 'name-n': 'نورة', 'ini-f': 'ف', 'name-f': 'فيصل',
   'tab-month': 'الشهر', 'tab-transfers': 'التحويلات', 'tab-account': 'الحساب',
+  // шторка 1, 2, 5, 6: 119:4317, 119:4630, 119:5037, 119:5352 / 122:3402, 122:3710, 122:4092, 122:4402
+  'name-rcp': 'عبدالله', avail: 'المتاح', 'avail-now': ' الآن:', arrow: '←',
+  projected: 'توقع الشهر', preview: 'معاينة فقط — لن يتم تحويل أي أموال',
+  'err-text': 'المبلغ غير كافٍ — المتاح', 'err-text2': '٥٬٦٥٠',
+  lim1: 'التحويل السريع محدود بـ', lim2: 'لكل عملية. خفّض المبلغ إلى',
+  lim3: 'أو أقل، أو أضف عبدالله إلى قائمة المستفيدين', lim4: 'لتحويل', 'lim-2500': '٢٬٥٠٠',
+  add: 'إضافة مستفيد', cont: 'متابعة', confirm: 'تأكيد', back: 'رجوع',
+  k1: '١', k2: '٢', k3: '٣', k4: '٤', k5: '٥', k6: '٦', k7: '٧', k8: '٨', k9: '٩', k0: '٠',
+};
+const TITLE = {
+  en: { transfer: 'Transfer by phone number', review: 'Review transfer' },
+  ar: { transfer: 'تحويل برقم الجوال', review: 'مراجعة التحويل' },
 };
 const SHEET = new Set(['1', '2', '5', '6']);
 
@@ -66,7 +78,11 @@ let state = params.get('state');
 if (!built(state)) state = 'home';
 let amount = FRAME_AMOUNT[state] ?? FRAME_AMOUNT[1];
 
-const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+// EN: тысячи через пробел. AR: восточно-арабские цифры, тысячи через «٬» — как во фреймах.
+const fmt = n => {
+  if (lang !== 'ar') return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '٬').replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+};
 
 // Ширины сегментов: все, кроме последнего, округляются; последний — остаток,
 // чтобы сумма совпала с полосой (так посчитаны бары в Figma: 111+159+74 = 344).
@@ -123,7 +139,7 @@ function stateForAmount(a) {
 }
 
 function renderSheet() {
-  $('sh-title').textContent = state === '2' ? 'Review transfer' : 'Transfer by phone number';
+  $('sh-title').textContent = TITLE[lang][state === '2' ? 'review' : 'transfer'];
   $('amt').textContent = fmt(amount);
   phone.querySelector('[data-v="available"]').textContent = fmt(AVAILABLE);
   $('new-avail').textContent = fmt(AVAILABLE - amount);
@@ -344,7 +360,7 @@ phone.addEventListener('click', e => {
   else if (k === 'sh-close') go('home', SHEET_OUT(SHEET_CLOSE.duration));
   else if (k === 'cont' && state === '1' && amount > 0) go('2', SMART(240));
   else if (k === 'back') go('1', SMART(240));
-  else if (k === 'confirm') go('3', DISSOLVE(240));
+  else if (k === 'confirm' && built('3')) go('3', DISSOLVE(240)); // AR: экрана 3 ещё нет (a3)
   else if (k === 'done') go('home', DISSOLVE(240));
   // add recipient — экрана нет (вне объёма v2)
 });

@@ -1,10 +1,10 @@
-// Зоны нажатия ≥ 44×44 — все видимые button: телефон и панель витрины, Home, шторка, 3 и 4; AR — Home.
+// Зоны нажатия ≥ 44×44 — все видимые button: телефон и панель витрины, Home, шторка, 3 и 4; AR — Home и шторка.
 import { openState, line } from './_stand.mjs';
 
 let red = 0;
 const RUNS_LIST = [
   ...['night', 'day'].flatMap(theme => ['home', '1', '2', '3', '4', '5', '6'].map(state => ({ theme, state, lang: 'en' }))),
-  ...['night', 'day'].map(theme => ({ theme, state: 'home', lang: 'ar' })),
+  ...['night', 'day'].flatMap(theme => ['home', '1', '2', '5', '6'].map(state => ({ theme, state, lang: 'ar' }))),
 ];
 for (const { theme, state, lang } of RUNS_LIST) {
   const { page, close } = await openState(theme, state, { lang });
