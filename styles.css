@@ -121,9 +121,6 @@
 /* шторка AR: клавиатура не зеркалится (1-2-3 слева направо), ⌫ отражён по горизонтали — как во фреймах */
 .phone[lang='ar'] .keypad { direction: ltr; }
 .phone[lang='ar'] [data-key='del'] svg { transform: scaleX(-1); }
-/* 1 · Night · AR (119:4422): сумма набрана AR/44 · Regular, во всех остальных шторках AR и в 1 · Day — Bold.
-   Похоже на ошибку во фрейме; повторяем кадр, вопрос к Figma — в отчёте a2. */
-.phone[lang='ar'][data-theme='night'][data-state='1'] [data-k='amt'] { font-weight: 400; }
 
 
 /* ---------- витрина ---------- */

@@ -145,7 +145,8 @@ function renderSheet() {
   $('new-avail').textContent = fmt(AVAILABLE - amount);
   $('pm-val-spent').textContent = fmt(SPENT + amount);
   $('pm-val-upc').textContent = fmt(UPCOMING);
-  phone.querySelector('[data-v="limit-amount"]').textContent = `${fmt(amount)}.`;
+  // AR: в начале U+200F (RLM), как в слое 119:5481 / 122:4525 — точка слева от цифр
+  phone.querySelector('[data-v="limit-amount"]').textContent = `${lang === 'ar' ? '\u200F' : ''}${fmt(amount)}.`;
   $('cont').disabled = state !== '1' || amount === 0; // 0 → неактивна (спека, «Поведение»)
 
   const w = v => `${v}px`;

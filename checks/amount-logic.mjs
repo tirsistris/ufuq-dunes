@@ -50,7 +50,7 @@ await key('2500');
 await expect('ровно 2 500 → 1 (лимит «больше»)', '1', '2 500', { 'disabled:cont': false });
 await key('del'); await key('del'); await key('del'); await key('del');
 await key('3000');
-await expect('3 000 > 2 500 → 6', '6', '3 000', { 'disabled:cont': true, lim4: { en: 'to send 3 000.', ar: 'لتحويل ٣٬٠٠٠.' } });
+await expect('3 000 > 2 500 → 6', '6', '3 000', { 'disabled:cont': true, lim4: { en: 'to send 3 000.', ar: 'لتحويل \u200F٣٬٠٠٠.' } });
 await key('del');
 await expect('⌫ на 6 → 300 → 1', '1', '300');
 await key('del'); await key('del'); await key('del');
