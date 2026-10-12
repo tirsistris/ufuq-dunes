@@ -35,7 +35,7 @@ const BUILT = new Set(['home', '1', '2', '3', '4', '5', '6']);
 const AR = {
   date1: '٤ سبتمبر ٢٠٢٦', date2: '٢٢ ربيع الأول ١٤٤٨ هـ',
   caption: 'الحساب الجاري  ••••  7742',
-  display: '٥٬٦٥٠', availnow: 'متاح الآن', of: 'من', since: '٩٬٠٠٠ منذ يوم الراتب',
+  display: '٥٬٦٥٠', availnow: 'متاح الآن', of: 'من', 'since-num': '٩٬٠٠٠', 'since-words': 'منذ يوم الراتب',
   'lbl-spent': 'مصروف', 'val-spent': '١٬٤٠٠', 'lbl-upcoming': 'الدفعات القادمة', 'val-upcoming': '١٬٩٥٠',
   around: 'حوالي', perday: '٢٤٦', aday: 'يوميًا', until: 'حتى يوم الراتب، ٢٧ سبتمبر',
   cta: 'تحويل برقم الجوال', 'title-upcoming': 'الدفعات القادمة',
@@ -145,8 +145,8 @@ function renderSheet() {
   $('new-avail').textContent = fmt(AVAILABLE - amount);
   $('pm-val-spent').textContent = fmt(SPENT + amount);
   $('pm-val-upc').textContent = fmt(UPCOMING);
-  // AR: в начале U+200F (RLM), как в слое 119:5481 / 122:4525 — точка слева от цифр
-  phone.querySelector('[data-v="limit-amount"]').textContent = `${lang === 'ar' ? '\u200F' : ''}${fmt(amount)}.`;
+  // AR (a4): без точки — «لتحويل ⃁ ٣٬٠٠٠», как в 119:5481 / 122:4525
+  phone.querySelector('[data-v="limit-amount"]').textContent = lang === 'ar' ? fmt(amount) : `${fmt(amount)}.`;
   $('cont').disabled = state !== '1' || amount === 0; // 0 → неактивна (спека, «Поведение»)
 
   const w = v => `${v}px`;

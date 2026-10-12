@@ -20,7 +20,9 @@ for (const lang of ['en', 'ar']) for (const theme of ['night', 'day']) for (cons
       n++;
       const r = document.createRange(); r.selectNodeContents(el);
       const t = r.getBoundingClientRect();
-      const box = el.parentElement.getBoundingClientRect();
+      let par = el.parentElement; // контейнер — ближайший предок с рамкой (display: contents её не имеет)
+      while (par && getComputedStyle(par).display === 'contents') par = par.parentElement;
+      const box = par.getBoundingClientRect();
       const name = (el.dataset.k || el.dataset.t || el.className || el.tagName) + ' «' + el.textContent.trim().slice(0, 24) + '»';
       if (t.left < box.left - TOL || t.right > box.right + TOL) out.push(`${name}: текст ${t.left.toFixed(1)}…${t.right.toFixed(1)}, родитель ${box.left.toFixed(1)}…${box.right.toFixed(1)}`);
       else if (t.left < P.left - TOL || t.right > P.right + TOL) out.push(`${name}: за краем телефона`);

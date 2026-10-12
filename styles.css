@@ -118,6 +118,30 @@
   .t-title3, .t-title3-s, .t-large, .t-amount44, .t-tab, .t-tab-s) { font-family: 'Readex Pro'; }
 /* латиница во фреймах AR — Inter: «+966 5X XXX XXXX» (HIG/Subheadline 15) и стрелка «←» в 2 */
 .phone[lang='ar'] [class*='t-'].latin { font-family: Inter; }
+/* AR (a4): знак риала слева от числа — правило SAMA, как во всех 14 AR-фреймах.
+   В RTL-строке элементы идут справа налево, поэтому знак ставится сразу после своего числа (order). */
+.phone[lang='ar'] [data-k='display'] { order: -1; }
+.phone[lang='ar'] [data-k='since'] { display: contents; }
+.phone[lang='ar'] [data-k='since-num'] { order: 1; }
+.phone[lang='ar'] [data-k='riyal10'] { order: 2; }
+.phone[lang='ar'] [data-k='since-words'] { order: 3; }
+.phone[lang='ar'] [data-k='riyal14'] { order: 1; }
+.phone[lang='ar'] [data-k='aday'] { order: 2; }
+.phone[lang='ar'] :is(.pay-sum, .amt-row, .lim-line) > svg,
+.phone[lang='ar'] [data-k='err-riyal'] { order: 1; }
+.phone[lang='ar'] [data-v='available'] { order: 1; }
+.phone[lang='ar'] .avail-line > svg:not([data-show]) { order: 2; }
+.phone[lang='ar'] .avail-line > [data-t='arrow'] { order: 3; }
+.phone[lang='ar'] [data-k='new-avail'] { order: 4; }
+.phone[lang='ar'] .avail-line > svg[data-show] { order: 5; }
+.phone[lang='ar'] [data-k='imp-line1'] > svg { order: 1; }
+.phone[lang='ar'] [data-k='imp-line1'] > [data-t='imp-to-name'] { order: 2; }
+.phone[lang='ar'] [data-k='imp-from'] { order: 1; }
+.phone[lang='ar'] [data-k='imp-line2'] > svg:first-of-type { order: 2; }
+.phone[lang='ar'] [data-k='imp-line2'] > [data-t='arrow'] { order: 3; }
+.phone[lang='ar'] [data-k='imp-to'] { order: 4; }
+.phone[lang='ar'] [data-k='imp-line2'] > svg:last-of-type { order: 5; }
+.phone[lang='ar'] [data-k='imp-line2'] > [data-t='imp-perday'] { order: 6; }
 /* шторка AR: клавиатура не зеркалится (1-2-3 слева направо), ⌫ отражён по горизонтали — как во фреймах */
 .phone[lang='ar'] .keypad { direction: ltr; }
 .phone[lang='ar'] [data-key='del'] svg { transform: scaleX(-1); }
