@@ -400,5 +400,7 @@ layoutBar();
 applyLang();
 applyTheme();
 applyState();
+// a5: переход фона витрины включается после первой отрисовки — при загрузке фон сразу нужный
+requestAnimationFrame(() => requestAnimationFrame(() => { root.dataset.pageAnim = ''; }));
 // ширины слов на 4 (ceil) снимаются по Inter, а не по запасному шрифту
 document.fonts.ready.then(() => { if (state === '4') renderImpact(); });

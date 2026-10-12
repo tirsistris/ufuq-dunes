@@ -1,6 +1,7 @@
 // EN после a0 не меняется ни на пиксель (спека ufuq-dunes-ar.md, приёмка 3).
 // 14 состояний EN (#phone 390×844 @1x, reduced motion) против ref/en-frozen/<состояние>-<тема>.png,
-// снятых до начала AR-работы (HEAD adabc34). Любой отличающийся пиксель — красное.
+// снятых до начала AR-работы (HEAD adabc34). Любой отличающийся пиксель кадра телефона — красное.
+// Сравнивается только сам телефон: углы за скруглением 44 px (там фон витрины, a5) и полоса 2 px сглаживания по краю скругления не сверяются.
 // Пересъёмка эталона — только по решению Баатра: `node checks/en-frozen.mjs --write`.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -25,9 +26,16 @@ for (const theme of ['night', 'day']) for (const state of ['home', '1', '2', '3'
     const x = c.getContext('2d', { willReadFrequently: true });
     x.drawImage(A, 0, 0); const da = x.getImageData(0, 0, c.width, c.height).data;
     x.clearRect(0, 0, c.width, c.height); x.drawImage(B, 0, 0); const db = x.getImageData(0, 0, c.width, c.height).data;
+    const R = 44, W = c.width, H = c.height;
+    const inPhone = (X, Y) => { // внутри скругления с запасом 2 px
+      const cx = X < R ? R : X >= W - R ? W - R - 1 : X, cy = Y < R ? R : Y >= H - R ? H - R - 1 : Y;
+      return Math.hypot(X - cx, Y - cy) <= R - 2;
+    };
     let px = 0, x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1;
     for (let i = 0; i < da.length; i += 4) if (da[i] !== db[i] || da[i + 1] !== db[i + 1] || da[i + 2] !== db[i + 2] || da[i + 3] !== db[i + 3]) {
-      px++; const p = i / 4, X = p % c.width, Y = (p / c.width) | 0;
+      const p = i / 4, X = p % c.width, Y = (p / c.width) | 0;
+      if (!inPhone(X, Y)) continue;
+      px++;
       x0 = Math.min(x0, X); y0 = Math.min(y0, Y); x1 = Math.max(x1, X); y1 = Math.max(y1, Y);
     }
     return { px, box: px ? [x0, y0, x1, y1] : null };

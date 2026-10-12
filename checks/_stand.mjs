@@ -68,6 +68,10 @@ const SPOILS = {
   arover: ['styles.css', '/* ---------- витрина ---------- */', ".phone[lang='ar'] .date { width: 60px; }\n/* ---------- витрина ---------- */"],
   // AR (a4): знак в суммах платежей, шторке и лимите снова справа от числа — «знак левее числа» обязан покраснеть
   arriyal: ['styles.css', ".phone[lang='ar'] :is(.pay-sum, .amt-row, .lim-line) > svg,\n.phone[lang='ar'] [data-k='err-riyal'] { order: 1; }",".phone[lang='ar'] [data-k='err-riyal'] { order: 1; }"],
+  // a5: переход фона витрины линейный вместо ease-out — page-bg обязан покраснеть
+  pageease: ['styles.css', 'transition: background-color 240ms ease-out; }', 'transition: background-color 240ms linear; }'],
+  // a5: тёмный фон витрины прежний (#070A14) — page-bg обязан покраснеть
+  pagecolor: ['styles.css', '--page: #1b2236;', '--page: #070a14;'],
   // AR: восточно-арабские цифры не подставляются — логика суммы AR обязана покраснеть
   ardigits: ['app.js', "  if (lang !== 'ar') return String(n)", "  if (true) return String(n)"],
 };

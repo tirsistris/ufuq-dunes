@@ -152,14 +152,14 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --page: #e9e9ee;
+  --page: #cfd1db; /* a5: фон витрины — решение Баатра, в Figma витрины нет */
   --page-ink: #2c2734;
   --page-faint: #6c6674;
   --page-line: #2c27341a;
   --page-chip: #ffffff;
 }
 :root[data-page='night'] {
-  --page: #070a14;
+  --page: #1b2236;
   --page-ink: #edf0f8;
   --page-faint: #919dbc;
   --page-line: #f1f4fb17;
@@ -167,6 +167,11 @@
 }
 
 html, body { background: var(--page); color: var(--page-ink); }
+/* a5: смена темы — фон витрины плавно, 240 мс ease-out; при первой отрисовке и reduced motion — сразу */
+:root[data-page-anim], :root[data-page-anim] body, :root[data-page-anim] .seg { transition: background-color 240ms ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  :root[data-page-anim], :root[data-page-anim] body, :root[data-page-anim] .seg { transition: none; }
+}
 body {
   font-family: Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
