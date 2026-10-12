@@ -56,8 +56,8 @@ const SPOILS = {
   tnum: ['styles.css', '/* ---------- витрина ---------- */', '#phone * { font-variant-numeric: tabular-nums; }\n/* ---------- витрина ---------- */'],
   // AR: Inter вместо Readex Pro — ширины AR обязаны покраснеть
   arfont: ['styles.css', ".t-title3, .t-title3-s, .t-large, .t-amount44, .t-tab, .t-tab-s) { font-family: 'Readex Pro'; }", ".t-title3, .t-title3-s, .t-large, .t-amount44, .t-tab, .t-tab-s) { font-family: Inter; }"],
-  // AR: «label Upcoming» у края, а не на x 44 как во фрейме — геометрия AR обязана покраснеть
-  arupc: ['styles.css', ".phone[lang='ar'] .bar-labels .l-upcoming { inset-inline-end: 44px; }", ''],
+  // AR: «label Upcoming» на x 44 (ошибка, уже исправленная в Figma) — геометрия AR обязана покраснеть
+  arupc: ['styles.css', '/* ---------- витрина ---------- */', ".phone[lang='ar'] .bar-labels .l-upcoming { inset-inline-end: 44px; }\n/* ---------- витрина ---------- */"],
   // AR: иконки статус-бара зеркалятся вместе с телефоном — геометрия AR обязана покраснеть
   ardir: ['styles.css', 'align-items: center; direction: ltr; }', 'align-items: center; }'],
 };

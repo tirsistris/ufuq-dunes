@@ -116,9 +116,6 @@
    9:41 — Inter (Body/16 Bold), как во фрейме. Зеркалирование — dir="rtl" на #phone. */
 .phone[lang='ar'] :is(.t-footnote, .t-footnote-s, .t-caption, .t-sub, .t-sub-s, .t-body, .t-headline,
   .t-title3, .t-title3-s, .t-large, .t-amount44, .t-tab, .t-tab-s) { font-family: 'Readex Pro'; }
-/* Home AR: «label Upcoming» во фрейме 119:4125 / 122:3210 стоит на x 44 от левого края Bar labels,
-   а не у края (в EN — у правого). Повторяем кадр; вопрос к Figma — в отчёте a1. */
-.phone[lang='ar'] .bar-labels .l-upcoming { inset-inline-end: 44px; }
 
 
 /* ---------- витрина ---------- */
