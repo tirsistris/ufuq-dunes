@@ -1,10 +1,10 @@
 {
-  "_source": "Figma McEpqCTJzqND3gyGahm4ry, get_variable_defs по фреймам Page 2, 2026-10-09. Режимы Dunes Night / Dunes Day.",
+  "_source": "Figma McEpqCTJzqND3gyGahm4ry, get_variable_defs по фреймам Page 2, 2026-10-09; ночной ios/tint обновлён 2026-10-12 (a0). Режимы Dunes Night / Dunes Day.",
   "night": {
     "background": "#0d1324", "foreground": "#edf0f8", "muted-foreground": "#919dbc",
     "card": "#161f38", "surface-2": "#10182d", "accent": "#f1f4fb17", "hover": "#f1f4fb12",
     "tint": "#f1f4fb1f", "border": "#f1f4fb17", "border-60": "#f1f4fb12",
-    "ios/tint": "#be7e65", "on-primary": "#1a1220", "destructive": "#ff8a7a",
+    "ios/tint": "#d98a5e", "on-primary": "#1a1220", "destructive": "#ff8a7a",
     "ufuq/on-sky": "#f1f4fb", "ufuq/on-sky-muted": "#aab6d3",
     "ufuq/horizon-edge": "#3e5288", "ufuq/horizon-line": "#070b18",
     "seg/spent · HIG": "#43c4b6", "ufuq/seg-available": "#f1f4fb", "seg/upcoming · HIG": "#757dbb"
