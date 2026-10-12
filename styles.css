@@ -10,6 +10,15 @@
   font-style: normal;
   font-display: block;
 }
+/* AR: Readex Pro 1.205 (Google Fonts, OFL) — та же версия, что в Figma: ширины 23 строк Home AR
+   совпали до 1 px (checks/ar-font-widths.mjs). Оси wght 160–700 и HEXP (во фреймах HEXP 0 — по умолчанию). */
+@font-face {
+  font-family: 'Readex Pro';
+  src: url('fonts/ReadexPro-1.205.woff2') format('woff2');
+  font-weight: 160 700;
+  font-style: normal;
+  font-display: block;
+}
 
 /* ---------- токены ---------- */
 
@@ -103,6 +112,15 @@
 .t-status     { font: 700 16px/1.4 Inter; }         /* Body/16 Bold */
 
 
+/* AR — группа стилей AR/ в Figma: те же кегль, интерлиньяж и начертание, шрифт Readex Pro.
+   9:41 — Inter (Body/16 Bold), как во фрейме. Зеркалирование — dir="rtl" на #phone. */
+.phone[lang='ar'] :is(.t-footnote, .t-footnote-s, .t-caption, .t-sub, .t-sub-s, .t-body, .t-headline,
+  .t-title3, .t-title3-s, .t-large, .t-amount44, .t-tab, .t-tab-s) { font-family: 'Readex Pro'; }
+/* Home AR: «label Upcoming» во фрейме 119:4125 / 122:3210 стоит на x 44 от левого края Bar labels,
+   а не у края (в EN — у правого). Повторяем кадр; вопрос к Figma — в отчёте a1. */
+.phone[lang='ar'] .bar-labels .l-upcoming { inset-inline-end: 44px; }
+
+
 /* ---------- витрина ---------- */
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -187,7 +205,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   display: flex; align-items: center; justify-content: space-between;
   background: var(--background);
 }
-.statusbar .icons { display: flex; gap: 5px; align-items: center; }
+.statusbar .icons { display: flex; gap: 5px; align-items: center; direction: ltr; } /* в AR не зеркалится — как во фрейме */
 
 .screen {
   position: absolute; inset: 0;
@@ -233,7 +251,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .sky .muted { color: var(--on-sky-muted); }
 .sky .caption { white-space: pre; }
 .star { position: absolute; display: block; }
-.moon { position: absolute; right: 26px; top: 10px; width: 22px; height: 22px; }
+.moon { position: absolute; inset-inline-end: 26px; top: 10px; width: 22px; height: 22px; }
 .moon img { position: absolute; inset: -3.64%; width: 107.28%; height: 107.28%; display: block; }
 [data-theme='day'] .star { display: none; }
 [data-theme='night'] .moon { display: none; }
@@ -252,8 +270,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .bar .s-upcoming { background: var(--seg-upcoming); }
 .bar-labels { position: relative; width: 326px; height: 48px; white-space: nowrap; }
 .bar-labels > div { position: absolute; top: 8px; display: flex; flex-direction: column; }
-.bar-labels .l-spent { left: 0; align-items: flex-start; }
-.bar-labels .l-upcoming { right: 0; align-items: flex-end; }
+.bar-labels .l-spent { inset-inline-start: 0; align-items: flex-start; }
+.bar-labels .l-upcoming { inset-inline-end: 0; align-items: flex-end; }
 .bar-labels .muted { color: var(--muted-foreground); }
 .phrase { display: flex; gap: 5px; align-items: center; padding-top: 16px; white-space: nowrap; }
 .ground .until { color: var(--muted-foreground); white-space: nowrap; }

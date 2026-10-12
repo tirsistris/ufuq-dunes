@@ -54,6 +54,12 @@ const SPOILS = {
   upc: ['styles.css', '--seg-upcoming: #8b84bc;', '--seg-upcoming: #a49fcc;'],
   // tabular-nums на телефоне (в Figma цифры пропорциональные) — геометрия обязана покраснеть
   tnum: ['styles.css', '/* ---------- витрина ---------- */', '#phone * { font-variant-numeric: tabular-nums; }\n/* ---------- витрина ---------- */'],
+  // AR: Inter вместо Readex Pro — ширины AR обязаны покраснеть
+  arfont: ['styles.css', ".t-title3, .t-title3-s, .t-large, .t-amount44, .t-tab, .t-tab-s) { font-family: 'Readex Pro'; }", ".t-title3, .t-title3-s, .t-large, .t-amount44, .t-tab, .t-tab-s) { font-family: Inter; }"],
+  // AR: «label Upcoming» у края, а не на x 44 как во фрейме — геометрия AR обязана покраснеть
+  arupc: ['styles.css', ".phone[lang='ar'] .bar-labels .l-upcoming { inset-inline-end: 44px; }", ''],
+  // AR: иконки статус-бара зеркалятся вместе с телефоном — геометрия AR обязана покраснеть
+  ardir: ['styles.css', 'align-items: center; direction: ltr; }', 'align-items: center; }'],
 };
 export const SPOIL = process.env.SPOIL || '';
 if (SPOIL && !SPOILS[SPOIL]) throw new Error(`нет порчи ${SPOIL}`);
@@ -79,8 +85,8 @@ export async function serve() {
   return { url: `http://127.0.0.1:${server.address().port}/`, close: () => server.close() };
 }
 
-// theme: 'night' | 'day'; state: 'home' | '1'..'6'
-export async function openHome(theme) { return openState(theme, 'home'); }
+// theme: 'night' | 'day'; state: 'home' | '1'..'6'; opts.lang: 'en' (по умолчанию) | 'ar'
+export async function openHome(theme, opts = {}) { return openState(theme, 'home', opts); }
 
 export async function openState(theme, state, opts = {}) {
   const srv = await serve();
@@ -97,13 +103,16 @@ export async function openState(theme, state, opts = {}) {
     await page.clock.install({ time: new Date('2026-09-04T09:41:00') });
     await page.clock.pauseAt(new Date('2026-09-04T09:41:01'));
   }
-  await page.goto(`${srv.url}?theme=${theme === 'night' ? 'dark' : 'light'}&state=${state}`);
+  const lang = opts.lang || 'en';
+  await page.goto(`${srv.url}?${lang === 'ar' ? 'lang=ar&' : ''}theme=${theme === 'night' ? 'dark' : 'light'}&state=${state}`);
   await page.evaluate(() => document.fonts.ready);
   await page.waitForFunction(() => [...document.images].every(i => i.complete));
   const t = await page.$eval('#phone', el => el.dataset.theme);
   if (t !== theme) throw new Error(`тема ${t}, ждали ${theme}`);
   const st = await page.$eval('#phone', el => el.dataset.state);
   if (st !== state) throw new Error(`состояние ${st}, ждали ${state}`);
+  const lg = await page.$eval('#phone', el => (el.lang || 'en') + (el.dir === 'rtl' ? '/rtl' : ''));
+  if (lg !== (lang === 'ar' ? 'ar/rtl' : 'en')) throw new Error(`язык ${lg}, ждали ${lang}`);
   return { page, close: async () => { await browser.close(); srv.close(); } };
 }
 

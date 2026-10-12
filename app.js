@@ -29,6 +29,28 @@ const SHEET_CLOSE = { duration: 160, easing: 'ease-in' };
 const CALC_MS = 1500;           // 3 → 4: After delay 1,5 s
 
 const BUILT = new Set(['home', '1', '2', '3', '4', '5', '6']);
+// AR собирается по шагам спеки ufuq-dunes-ar.md: a1 — Home, a2 — шторка, a3 — 3 и 4.
+const BUILT_AR = new Set(['home']);
+const built = s => (lang === 'ar' ? BUILT_AR : BUILT).has(s);
+
+// Тексты AR — дословно из фреймов Figma Page 2 «· AR» (Home: 119:4082 / 122:3172).
+// Ключ — data-t в index.html. EN-тексты остаются в разметке и возвращаются как были.
+const AR = {
+  date1: '٤ سبتمبر ٢٠٢٦', date2: '٢٢ ربيع الأول ١٤٤٨ هـ',
+  caption: 'الحساب الجاري  ••••  7742',
+  display: '٥٬٦٥٠', availnow: 'متاح الآن', of: 'من', since: '٩٬٠٠٠ منذ يوم الراتب',
+  'lbl-spent': 'مصروف', 'val-spent': '١٬٤٠٠', 'lbl-upcoming': 'الدفعات القادمة', 'val-upcoming': '١٬٩٥٠',
+  around: 'حوالي', perday: '٢٤٦', aday: 'يوميًا', until: 'حتى يوم الراتب، ٢٧ سبتمبر',
+  cta: 'تحويل برقم الجوال', 'title-upcoming': 'الدفعات القادمة',
+  day1: '٨', day2: '١٥', day3: '٢٢', day4: '٢٨', sep: 'سبتمبر',
+  pay1: 'مرزان لتمويل السيارات', 'pay1-desc': 'بعد ٤ أيام', sum1: '٨٥٠',
+  pay2: 'تاليا للتأمين الصحي', sum2: '٦٢٠',
+  pay3: 'مدارس خرزة العالمية', sum3: '٤٨٠',
+  pay4: 'ترفين للبث', 'pay4-desc': 'الدورة القادمة', sum4: '٢٥٠',
+  'title-send': 'إرسال سريع',
+  'ini-a': 'ع', 'name-a': 'عبدالله', 'ini-n': 'ن', 'name-n': 'نورة', 'ini-f': 'ف', 'name-f': 'فيصل',
+  'tab-month': 'الشهر', 'tab-transfers': 'التحويلات', 'tab-account': 'الحساب',
+};
 const SHEET = new Set(['1', '2', '5', '6']);
 
 const phone = document.getElementById('phone');
@@ -39,8 +61,9 @@ const $ = k => phone.querySelector(`[data-k="${k}"]`);
 
 const params = new URLSearchParams(location.search);
 let themePick = ['light', 'dark', 'auto'].includes(params.get('theme')) ? params.get('theme') : 'auto';
+let lang = params.get('lang') === 'ar' ? 'ar' : 'en';
 let state = params.get('state');
-if (!BUILT.has(state)) state = 'home';
+if (!built(state)) state = 'home';
 let amount = FRAME_AMOUNT[state] ?? FRAME_AMOUNT[1];
 
 const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -69,8 +92,24 @@ function applyTheme() {
   }
 }
 
+const EN = new Map(); // data-t → исходная разметка EN
+function applyLang() {
+  const ar = lang === 'ar';
+  if (ar) { phone.lang = 'ar'; phone.dir = 'rtl'; } else { phone.removeAttribute('lang'); phone.removeAttribute('dir'); }
+  for (const el of phone.querySelectorAll('[data-t]')) {
+    if (!EN.has(el)) EN.set(el, el.innerHTML);
+    if (ar) el.textContent = AR[el.dataset.t];
+    else el.innerHTML = EN.get(el);
+  }
+  for (const b of document.querySelectorAll('[data-lang-pick]')) {
+    b.setAttribute('aria-pressed', String(b.dataset.langPick === lang));
+  }
+  for (const b of document.querySelectorAll('[data-state]')) b.disabled = !built(b.dataset.state);
+}
+
 function syncUrl() {
   const p = new URLSearchParams(location.search);
+  p.set('lang', lang);
   p.set('theme', themePick);
   p.set('state', state);
   history.replaceState(null, '', `?${p}`);
@@ -301,7 +340,7 @@ phone.addEventListener('click', e => {
     return;
   }
   const k = e.target.closest('[data-k]')?.dataset.k;
-  if (k === 'cta') { amount = FRAME_AMOUNT[1]; go('1', SHEET_IN(240)); }
+  if (k === 'cta') { if (!built('1')) return; amount = FRAME_AMOUNT[1]; go('1', SHEET_IN(240)); } // AR: шторки ещё нет (a2)
   else if (k === 'sh-close') go('home', SHEET_OUT(SHEET_CLOSE.duration));
   else if (k === 'cont' && state === '1' && amount > 0) go('2', SMART(240));
   else if (k === 'back') go('1', SMART(240));
@@ -311,6 +350,16 @@ phone.addEventListener('click', e => {
 });
 
 // ---------- панель витрины ----------
+
+document.getElementById('lang-seg').addEventListener('click', e => {
+  const b = e.target.closest('[data-lang-pick]');
+  if (!b || b.dataset.langPick === lang) return;
+  settle();
+  lang = b.dataset.langPick;
+  applyLang();
+  // состояние сохраняется; если в этом языке его ещё нет — Home
+  if (built(state)) applyState(); else go('home');
+});
 
 document.getElementById('theme-seg').addEventListener('click', e => {
   const b = e.target.closest('[data-theme-pick]');
@@ -330,6 +379,7 @@ document.getElementById('states').addEventListener('click', e => {
 media.addEventListener('change', () => { if (themePick === 'auto') applyTheme(); });
 
 layoutBar();
+applyLang();
 applyTheme();
 applyState();
 // ширины слов на 4 (ceil) снимаются по Inter, а не по запасному шрифту

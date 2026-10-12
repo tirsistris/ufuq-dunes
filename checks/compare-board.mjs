@@ -4,42 +4,49 @@
 // runs/sheet-geometry.json и runs/impact-geometry.json — сначала прогнать эти стражи). Ничего не чинит — только показывает.
 // `node checks/compare-board.mjs` — Home → compare-board.png;
 // `node checks/compare-board.mjs 1 2 5 6` — эти состояния → compare-board-1-2-5-6.png.
-// Кадры приложения: runs/app-<состояние>-<тема>.png.
+// AR: `AR=1 node checks/compare-board.mjs` — фреймы «· AR», эталоны ref/ar/, геометрия runs/home-ar-geometry.json
+// → compare-board-ar-home.png.
+// Кадры приложения: runs/app-<состояние>-<тема>.png (AR: runs/app-ar-…).
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'file:///C:/Users/ADMIN/AppData/Local/npm-cache/_npx/705bc6b22212b352/node_modules/playwright/index.mjs';
 import { ROOT, RUNS, openState, line } from './_stand.mjs';
 
 const STATES = process.argv.slice(2).length ? process.argv.slice(2) : ['home'];
+const LANG = process.env.AR ? 'ar' : 'en';
+const AR = LANG === 'ar';
+if (AR && STATES.some(s => s !== 'home')) { line('AR: пока собран только Home (шаг a1)'); process.exit(2); }
 const geo = name => {
   const f = path.join(RUNS, name);
   if (!fs.existsSync(f)) { line(`нет runs/${name} — сначала соответствующий страж геометрии`); process.exit(2); }
   return JSON.parse(fs.readFileSync(f, 'utf8'));
 };
-const GEO_HOME = STATES.includes('home') ? geo('home-geometry.json') : null;
+const GEO_HOME = STATES.includes('home') ? geo(AR ? 'home-ar-geometry.json' : 'home-geometry.json') : null;
 const IMPACT = s => s === '3' || s === '4';
 const GEO_SHEET = STATES.some(s => s !== 'home' && !IMPACT(s)) ? geo('sheet-geometry.json') : null;
 const GEO_IMPACT = STATES.some(IMPACT) ? geo('impact-geometry.json') : null;
 const geoOf = (state, theme) => state === 'home' ? (GEO_HOME[theme] || {})
   : (((IMPACT(state) ? GEO_IMPACT : GEO_SHEET)[theme] || {})[state] || {});
-const refOf = (state, theme) => path.join(ROOT, 'ref', state === 'home' ? `home-${theme}.png` : `s${state}-${theme}.png`);
+const refOf = (state, theme) => path.join(ROOT, 'ref', AR ? 'ar' : '', state === 'home' ? `home-${theme}.png` : `s${state}-${theme}.png`);
 const TITLE = { home: 'Home', 1: '1 · Enter amount', 2: '2 · Confirm', 3: '3 · Calculating impact', 4: '4 · Projected impact', 5: '5 · Not enough money', 6: '6 · Above channel limit' };
-const NODE = { home: ['90:8017', '90:8103'], 1: ['90:6627', '90:7344'], 2: ['90:6784', '90:7495'], 3: ['90:7298', '90:7926'], 4: ['90:7233', '90:7962'], 5: ['90:6915', '90:7620'], 6: ['90:7073', '90:7772'] };
+const NODE_AR = { home: ['119:4082', '122:3172'] };
+const NODE_EN = { home: ['90:8017', '90:8103'], 1: ['90:6627', '90:7344'], 2: ['90:6784', '90:7495'], 3: ['90:7298', '90:7926'], 4: ['90:7233', '90:7962'], 5: ['90:6915', '90:7620'], 6: ['90:7073', '90:7772'] };
+const NODE = AR ? NODE_AR : NODE_EN;
 const b64 = f => 'data:image/png;base64,' + fs.readFileSync(f).toString('base64');
 
 const shots = {};
 for (const state of STATES) for (const theme of ['night', 'day']) {
-  const { page, close } = await openState(theme, state);
+  const { page, close } = await openState(theme, state, { lang: LANG });
   await page.addStyleTag({ content: 'html,body{background:transparent!important}' });
   const box = await page.$eval('#phone', el => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; });
-  const out = path.join(RUNS, `app-${state}-${theme}.png`);
+  const out = path.join(RUNS, `app-${AR ? 'ar-' : ''}${state}-${theme}.png`);
   await page.screenshot({ path: out, clip: box, omitBackground: true });
   shots[`${state}-${theme}`] = out;
   await close();
 }
 
 const rows = STATES.flatMap(state => ['night', 'day'].map(theme => ({
-  theme: `${TITLE[state]} · ${theme}`, key: `${state}-${theme}`,
+  theme: `${TITLE[state]}${AR ? ' · AR' : ''} · ${theme}`, key: `${state}-${theme}`,
   fig: b64(refOf(state, theme)),
   app: b64(shots[`${state}-${theme}`]),
   bad: Object.entries(geoOf(state, theme)).filter(([, v]) => v.bad).map(([k, v]) => ({ k, fig: v.fig || v.app, app: v.app, d: v.d || [0, 0, 0, 0] })),
@@ -55,7 +62,7 @@ h1{font-size:18px;margin:0 0 4px} .sub{color:#666;margin-bottom:16px}
 .box{position:absolute;border:2px solid #e00000;box-sizing:border-box}
 .notes{width:390px;font-size:12px;line-height:17px} .red{color:#c00000;font-weight:600} .ok{color:#0a7a2f;font-weight:600}
 </style>
-<h1>Ufuq v2 «Дюны» — сверка: ${STATES.map(s => TITLE[s]).join(', ')}</h1>
+<h1>Ufuq v2 «Дюны» — сверка${AR ? ' AR' : ''}: ${STATES.map(s => TITLE[s]).join(', ')}</h1>
 <div class=sub>Figma Page 2: ${STATES.map(s => `${TITLE[s]} — Night ${NODE[s][0]}, Day ${NODE[s][1]}`).join(' · ')} · приложение 390×844 @1x, Chromium · красная рамка = геометрия Figma там, где отклонение &gt; 2 px</div>
 <div id=rows></div>
 <script>
@@ -108,7 +115,7 @@ const board = path.join(RUNS, 'compare-board.html');
 fs.writeFileSync(board, html);
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 2100, height: 800 }, deviceScaleFactor: 1 });
-const OUT = STATES.join() === 'home' ? 'compare-board.png' : `compare-board-${STATES.join('-')}.png`;
+const OUT = AR ? `compare-board-ar-${STATES.join('-')}.png` : STATES.join() === 'home' ? 'compare-board.png' : `compare-board-${STATES.join('-')}.png`;
 await page.goto('file:///' + board.replace(/\\/g, '/'));
 await page.waitForSelector('body[data-done="1"]');
 const stats = await page.evaluate(() => window.STATS);

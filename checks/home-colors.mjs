@@ -1,4 +1,4 @@
-// Цвета Home против переменных Figma (ref/tokens.figma.json), обе темы.
+// Цвета Home против переменных Figma (ref/tokens.figma.json), обе темы, EN и AR (переменные те же).
 // Сравнение — вычисленный стиль элемента против значения переменной; любое
 // отличие канала — красное.
 import fs from 'node:fs';
@@ -56,8 +56,9 @@ function cssToRgba(s) {
 }
 
 let red = 0;
-for (const theme of ['night', 'day']) {
-  const { page, close } = await openHome(theme);
+for (const lang of ['en', 'ar']) for (const theme of ['night', 'day']) {
+  const { page, close } = await openHome(theme, { lang });
+  const tag = lang === 'ar' ? 'AR ' : '';
   let ok = 0;
   for (const [k, prop, token, sel] of MAP) {
     const css = await page.$eval(sel || `#phone [data-k="${k}"]`, (el, prop) => getComputedStyle(el).getPropertyValue(prop), prop);
@@ -65,9 +66,9 @@ for (const theme of ['night', 'day']) {
     const got = cssToRgba(css);
     const same = got.slice(0, 3).every((v, i) => v === want[i]) && Math.abs(got[3] - want[3]) < 0.004;
     if (same) ok++;
-    else { red++; line(`КРАСНОЕ ${theme} ${k} ${prop}: ${token} = ${TOK[theme][token]}, в приложении ${css}`); }
+    else { red++; line(`КРАСНОЕ ${tag}${theme} ${k} ${prop}: ${token} = ${TOK[theme][token]}, в приложении ${css}`); }
   }
-  line(`${theme}: ${ok}/${MAP.length} цветов = переменные Figma`);
+  line(`${tag}${theme}: ${ok}/${MAP.length} цветов = переменные Figma`);
   await close();
 }
 line(red ? `ИТОГ: КРАСНОЕ (${red})` : 'ИТОГ: зелёное');
