@@ -29,9 +29,6 @@ const SHEET_CLOSE = { duration: 160, easing: 'ease-in' };
 const CALC_MS = 1500;           // 3 → 4: After delay 1,5 s
 
 const BUILT = new Set(['home', '1', '2', '3', '4', '5', '6']);
-// AR собирается по шагам спеки ufuq-dunes-ar.md: a1 — Home, a2 — шторка, a3 — 3 и 4.
-const BUILT_AR = new Set(['home', '1', '2', '5', '6']);
-const built = s => (lang === 'ar' ? BUILT_AR : BUILT).has(s);
 
 // Тексты AR — дословно из фреймов Figma Page 2 «· AR» (Home: 119:4082 / 122:3172).
 // Ключ — data-t в index.html. EN-тексты остаются в разметке и возвращаются как были.
@@ -57,6 +54,10 @@ const AR = {
   lim1: 'التحويل السريع محدود بـ', lim2: 'لكل عملية. خفّض المبلغ إلى',
   lim3: 'أو أقل، أو أضف عبدالله إلى قائمة المستفيدين', lim4: 'لتحويل', 'lim-2500': '٢٬٥٠٠',
   add: 'إضافة مستفيد', cont: 'متابعة', confirm: 'تأكيد', back: 'رجوع',
+  // 3 и 4: 119:4917, 119:4963 / 122:3992, 122:4028
+  'calc-title': 'جارٍ حساب الأثر…', 'imp-title': 'الأثر المتوقع', 'imp-sub': 'المتاح بعد التحويل',
+  'imp-if': 'في حال تحويل', 'imp-to-name': 'إلى عبدالله', 'imp-perday': 'يوميًا حتى يوم الراتب',
+  'imp-note': 'لم يتم تحويل أي أموال', done: 'إغلاق',
   k1: '١', k2: '٢', k3: '٣', k4: '٤', k5: '٥', k6: '٦', k7: '٧', k8: '٨', k9: '٩', k0: '٠',
 };
 const TITLE = {
@@ -75,7 +76,7 @@ const params = new URLSearchParams(location.search);
 let themePick = ['light', 'dark', 'auto'].includes(params.get('theme')) ? params.get('theme') : 'auto';
 let lang = params.get('lang') === 'ar' ? 'ar' : 'en';
 let state = params.get('state');
-if (!built(state)) state = 'home';
+if (!BUILT.has(state)) state = 'home';
 let amount = FRAME_AMOUNT[state] ?? FRAME_AMOUNT[1];
 
 // EN: тысячи через пробел. AR: восточно-арабские цифры, тысячи через «٬» — как во фреймах.
@@ -120,7 +121,6 @@ function applyLang() {
   for (const b of document.querySelectorAll('[data-lang-pick]')) {
     b.setAttribute('aria-pressed', String(b.dataset.langPick === lang));
   }
-  for (const b of document.querySelectorAll('[data-state]')) b.disabled = !built(b.dataset.state);
 }
 
 function syncUrl() {
@@ -357,11 +357,11 @@ phone.addEventListener('click', e => {
     return;
   }
   const k = e.target.closest('[data-k]')?.dataset.k;
-  if (k === 'cta') { if (!built('1')) return; amount = FRAME_AMOUNT[1]; go('1', SHEET_IN(240)); } // AR: шторки ещё нет (a2)
+  if (k === 'cta') { amount = FRAME_AMOUNT[1]; go('1', SHEET_IN(240)); }
   else if (k === 'sh-close') go('home', SHEET_OUT(SHEET_CLOSE.duration));
   else if (k === 'cont' && state === '1' && amount > 0) go('2', SMART(240));
   else if (k === 'back') go('1', SMART(240));
-  else if (k === 'confirm' && built('3')) go('3', DISSOLVE(240)); // AR: экрана 3 ещё нет (a3)
+  else if (k === 'confirm') go('3', DISSOLVE(240));
   else if (k === 'done') go('home', DISSOLVE(240));
   // add recipient — экрана нет (вне объёма v2)
 });
@@ -374,8 +374,9 @@ document.getElementById('lang-seg').addEventListener('click', e => {
   settle();
   lang = b.dataset.langPick;
   applyLang();
-  // состояние сохраняется; если в этом языке его ещё нет — Home
-  if (built(state)) applyState(); else go('home');
+  applyState(); // тема и состояние сохраняются
+  // ширины слов на 4 (ceil) снимаются по Readex Pro / Inter, а не по запасному шрифту
+  document.fonts.ready.then(() => { if (state === '4') renderImpact(); });
 });
 
 document.getElementById('theme-seg').addEventListener('click', e => {

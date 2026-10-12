@@ -1,4 +1,4 @@
-// Цвета экранов 3 и 4 против переменных Figma (ref/tokens.figma.json), обе темы.
+// Цвета экранов 3 и 4 против переменных Figma (ref/tokens.figma.json), обе темы, EN и AR.
 // Вычисленный стиль против значения переменной; любое отличие канала — красное.
 // Дюны (SVG как есть) и дневная заливка карточки (не переменная) — отдельной строкой NOVAR.
 import fs from 'node:fs';
@@ -46,22 +46,23 @@ function cssToRgba(s) {
 const same = (css, hex) => { const g = cssToRgba(css), w = hexToRgba(hex); return g.slice(0, 3).every((v, i) => v === w[i]) && Math.abs(g[3] - w[3]) < 0.004; };
 
 let red = 0;
-for (const theme of ['night', 'day']) {
+for (const lang of ['en', 'ar']) for (const theme of ['night', 'day']) {
+  const tag = lang === 'ar' ? 'AR ' : '';
   for (const state of ['3', '4']) {
-    const { page, close } = await openState(theme, state);
+    const { page, close } = await openState(theme, state, { lang });
     const rows = MAP.filter(r => r[0].includes(state));
     let ok = 0;
     for (const [, sel, prop, token] of rows) {
       const css = await page.$eval(sel, (el, prop) => getComputedStyle(el).getPropertyValue(prop), prop);
       if (same(css, TOK[theme][token])) ok++;
-      else { red++; line(`КРАСНОЕ ${theme} ${state} ${sel} ${prop}: ${token} = ${TOK[theme][token]}, в приложении ${css}`); }
+      else { red++; line(`КРАСНОЕ ${tag}${theme} ${state} ${sel} ${prop}: ${token} = ${TOK[theme][token]}, в приложении ${css}`); }
     }
     const card = k(state === '3' ? 'calc-card' : 'imp-card');
     const [bg, blur] = await page.$eval(card, el => { const s = getComputedStyle(el); return [s.backgroundColor, s.backdropFilter]; });
-    if (!same(bg, CARD[theme])) { red++; line(`КРАСНОЕ ${theme} ${state} карточка: ждали ${CARD[theme]}, в приложении ${bg}`); }
+    if (!same(bg, CARD[theme])) { red++; line(`КРАСНОЕ ${tag}${theme} ${state} карточка: ждали ${CARD[theme]}, в приложении ${bg}`); }
     // Background blur 24 в Figma = CSS blur(12px) (так его выводит сама Figma в get_design_context)
-    if (blur !== 'blur(12px)') { red++; line(`КРАСНОЕ ${theme} ${state} карточка: backdrop-filter ${blur}, ждали blur(12px)`); }
-    line(`${theme} ${state}: ${ok}/${rows.length} цветов = переменные Figma; карточка ${bg} ${blur}`);
+    if (blur !== 'blur(12px)') { red++; line(`КРАСНОЕ ${tag}${theme} ${state} карточка: backdrop-filter ${blur}, ждали blur(12px)`); }
+    line(`${tag}${theme} ${state}: ${ok}/${rows.length} цветов = переменные Figma; карточка ${bg} ${blur}`);
     await close();
   }
 }

@@ -1,4 +1,4 @@
-// Контраст по токенам (WCAG 2.x), обе темы. Цвета берутся из живой страницы (CSS-переменные #phone),
+// Контраст по токенам (WCAG 2.x), обе темы, EN и AR. Цвета берутся из живой страницы (CSS-переменные #phone),
 // не из ref/tokens.figma.json — так ловится расхождение кода с Figma.
 // Пороги из спеки: главное число на небе ≥ 7 (худшее место неба — самый «близкий» стоп градиента),
 // сегменты ≥ 3, текст ≥ 4.5. Эталоны Figma (ночь/день) — совпасть до ±0,01.
@@ -24,8 +24,9 @@ const cr = (a, b) => { const x = L(a), y = L(b); return (Math.max(x, y) + 0.05) 
 const worst = (fg, stops) => Math.min(...stops.map(s => cr(fg, s)));
 
 let red = 0, n = 0;
-for (const [ti, theme] of ['night', 'day'].entries()) {
-  const { page, close } = await openState(theme, 'home');
+for (const lang of ['en', 'ar']) for (const [ti, theme] of ['night', 'day'].entries()) {
+  const tag = lang === 'ar' ? 'AR ' : '';
+  const { page, close } = await openState(theme, 'home', { lang });
   const v = await page.$eval('#phone', el => {
     const cs = getComputedStyle(el), o = {};
     for (const k of ['on-sky', 'on-sky-muted', 'seg-available', 'seg-spent', 'seg-upcoming', 'card', 'on-primary', 'ios-tint', 'destructive', 'foreground', 'muted-foreground', 'sky', 'sheet-sky']) o[k] = cs.getPropertyValue('--' + k).trim();
@@ -34,7 +35,7 @@ for (const [ti, theme] of ['night', 'day'].entries()) {
   await close();
   const stops = g => (g.match(/#[0-9a-f]{6}/gi) || []);
   const sky = [...new Set([...stops(v.sky), ...stops(v['sheet-sky'])])];
-  if (sky.length < 3) { red++; line(`КРАСНОЕ ${theme}: стопы неба не прочитаны (${v.sky})`); }
+  if (sky.length < 3) { red++; line(`КРАСНОЕ ${tag}${theme}: стопы неба не прочитаны (${v.sky})`); }
 
   // [имя, значение, порог]
   const pairs = [
@@ -54,7 +55,7 @@ for (const [ti, theme] of ['night', 'day'].entries()) {
     if (val < min) bad.push(`ниже порога ${min}`);
     const ref = REF[name]?.[ti];
     if (ref != null && Math.abs(val - ref) > 0.01) bad.push(`Figma ${ref.toFixed(2)}`);
-    const s = `${theme} ${name}: ${val.toFixed(2)} (порог ${min}${ref != null ? `, Figma ${ref.toFixed(2)}` : ''})`;
+    const s = `${tag}${theme} ${name}: ${val.toFixed(2)} (порог ${min}${ref != null ? `, Figma ${ref.toFixed(2)}` : ''})`;
     if (bad.length) { red++; line(`КРАСНОЕ ${s} — ${bad.join('; ')}`); } else line(`ок ${s}`);
   }
 }

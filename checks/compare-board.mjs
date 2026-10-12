@@ -4,7 +4,7 @@
 // runs/sheet-geometry.json и runs/impact-geometry.json — сначала прогнать эти стражи). Ничего не чинит — только показывает.
 // `node checks/compare-board.mjs` — Home → compare-board.png;
 // `node checks/compare-board.mjs 1 2 5 6` — эти состояния → compare-board-1-2-5-6.png.
-// AR: `AR=1 node checks/compare-board.mjs [1 2 5 6]` — фреймы «· AR», эталоны ref/ar/,
+// AR: `AR=1 node checks/compare-board.mjs [home 1 2 3 4 5 6]` — фреймы «· AR», эталоны ref/ar/,
 // геометрия runs/home-ar-geometry.json / sheet-ar-geometry.json → compare-board-ar-<состояния>.png.
 // Кадры приложения: runs/app-<состояние>-<тема>.png (AR: runs/app-ar-…).
 import fs from 'node:fs';
@@ -15,7 +15,6 @@ import { ROOT, RUNS, openState, line } from './_stand.mjs';
 const STATES = process.argv.slice(2).length ? process.argv.slice(2) : ['home'];
 const LANG = process.env.AR ? 'ar' : 'en';
 const AR = LANG === 'ar';
-if (AR && STATES.some(s => s === '3' || s === '4')) { line('AR: 3 и 4 ещё не собраны (шаг a3)'); process.exit(2); }
 const geo = name => {
   const f = path.join(RUNS, name);
   if (!fs.existsSync(f)) { line(`нет runs/${name} — сначала соответствующий страж геометрии`); process.exit(2); }
@@ -24,12 +23,12 @@ const geo = name => {
 const GEO_HOME = STATES.includes('home') ? geo(AR ? 'home-ar-geometry.json' : 'home-geometry.json') : null;
 const IMPACT = s => s === '3' || s === '4';
 const GEO_SHEET = STATES.some(s => s !== 'home' && !IMPACT(s)) ? geo(AR ? 'sheet-ar-geometry.json' : 'sheet-geometry.json') : null;
-const GEO_IMPACT = STATES.some(IMPACT) ? geo('impact-geometry.json') : null;
+const GEO_IMPACT = STATES.some(IMPACT) ? geo(AR ? 'impact-ar-geometry.json' : 'impact-geometry.json') : null;
 const geoOf = (state, theme) => state === 'home' ? (GEO_HOME[theme] || {})
   : (((IMPACT(state) ? GEO_IMPACT : GEO_SHEET)[theme] || {})[state] || {});
 const refOf = (state, theme) => path.join(ROOT, 'ref', AR ? 'ar' : '', state === 'home' ? `home-${theme}.png` : `s${state}-${theme}.png`);
 const TITLE = { home: 'Home', 1: '1 · Enter amount', 2: '2 · Confirm', 3: '3 · Calculating impact', 4: '4 · Projected impact', 5: '5 · Not enough money', 6: '6 · Above channel limit' };
-const NODE_AR = { home: ['119:4082', '122:3172'], 1: ['119:4317', '122:3402'], 2: ['119:4630', '122:3710'], 5: ['119:5037', '122:4092'], 6: ['119:5352', '122:4402'] };
+const NODE_AR = { home: ['119:4082', '122:3172'], 1: ['119:4317', '122:3402'], 2: ['119:4630', '122:3710'], 3: ['119:4917', '122:3992'], 4: ['119:4963', '122:4028'], 5: ['119:5037', '122:4092'], 6: ['119:5352', '122:4402'] };
 const NODE_EN = { home: ['90:8017', '90:8103'], 1: ['90:6627', '90:7344'], 2: ['90:6784', '90:7495'], 3: ['90:7298', '90:7926'], 4: ['90:7233', '90:7962'], 5: ['90:6915', '90:7620'], 6: ['90:7073', '90:7772'] };
 const NODE = AR ? NODE_AR : NODE_EN;
 const b64 = f => 'data:image/png;base64,' + fs.readFileSync(f).toString('base64');

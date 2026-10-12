@@ -8,6 +8,7 @@
 //   Кривая ловится и по строке easing, и по положению шторки в середине пути.
 // Каждый вызов Element.animate() пишется в window.__anims: длительность, кривая, анимируемые свойства.
 // prefers-reduced-motion → только прозрачность. Любое расхождение — красное.
+// Весь поток — в EN и в AR (те же переходы и тайминги; числа в AR — восточно-арабские, num()).
 import { openState, line } from './_stand.mjs';
 
 const REC = `window.__anims = [];
@@ -18,10 +19,12 @@ Element.prototype.animate = function (kf, o) {
   return _a.call(this, kf, o);
 };`;
 
+const AR_D = '٠١٢٣٤٥٦٧٨٩';
 let red = 0, n = 0;
-async function run(reduced) {
-  const tag = reduced ? 'reduce' : 'motion';
-  const { page, close } = await openState('night', 'home', { clock: true, init: REC, reducedMotion: reduced });
+async function run(reduced, lang) {
+  const num = s => lang === 'ar' ? s.replace(/(\d) (?=\d{3})/g, '$1٬').replace(/\d/g, d => AR_D[d]) : s;
+  const tag = `${lang === 'ar' ? 'AR ' : ''}${reduced ? 'reduce' : 'motion'}`;
+  const { page, close } = await openState('night', 'home', { clock: true, init: REC, reducedMotion: reduced, lang });
   const st = () => page.$eval('#phone', el => el.dataset.state);
   const txt = k => page.$eval(`#phone [data-k="${k}"]`, el => el.innerText.replace(/\s+/g, ' ').trim());
   const w = k => page.$eval(`#phone [data-k="${k}"]`, el => Math.round(el.getBoundingClientRect().width));
@@ -76,7 +79,8 @@ async function run(reduced) {
       if (kind === 'dissolve' || kind === 'smart-fade' || reduced) { for (const p of props) if (p !== 'opacity') bad.push(`анимируется ${p}, ждали только opacity`); }
       if (kind === 'smart' && !reduced && !props.has('transform')) bad.push('smart animate без движения (нет transform)');
     }
-    for (const [k, v] of Object.entries(extra)) {
+    for (let [k, v] of Object.entries(extra)) {
+      if (typeof v === 'string') v = num(v);
       const g = k.startsWith('w:') ? await w(k.slice(2)) : await txt(k);
       if (g !== v) bad.push(`${k} = ${JSON.stringify(g)}, ждали ${JSON.stringify(v)}`);
     }
@@ -213,7 +217,6 @@ async function run(reduced) {
   await close();
 }
 
-await run(false);
-await run(true);
+for (const lang of ['en', 'ar']) { await run(false, lang); await run(true, lang); }
 line(red ? `ИТОГ: КРАСНОЕ (${red} из ${n})` : `ИТОГ: зелёное (${n}/${n})`);
 process.exit(red ? 1 : 0);

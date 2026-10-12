@@ -64,6 +64,8 @@ const SPOILS = {
   arkeys: ['styles.css', ".phone[lang='ar'] .keypad { direction: ltr; }", ''],
   // AR: ⌫ не отражён — геометрия шторки AR (проверка transform) обязана покраснеть
   ardel: ['styles.css', ".phone[lang='ar'] [data-key='del'] svg { transform: scaleX(-1); }", ''],
+  // AR: колонка даты в шапке уже текста — страж «текст в контейнере» обязан покраснеть
+  arover: ['styles.css', '/* ---------- витрина ---------- */', ".phone[lang='ar'] .date { width: 60px; }\n/* ---------- витрина ---------- */"],
   // AR: восточно-арабские цифры не подставляются — логика суммы AR обязана покраснеть
   ardigits: ['app.js', "  if (lang !== 'ar') return String(n)", "  if (true) return String(n)"],
 };
